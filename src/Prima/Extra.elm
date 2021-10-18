@@ -1,11 +1,13 @@
-module Prima.Extra exposing
-    ( ifThenElse
-    , ifThenElseCmds
-    , ifThenElseMap
-    , ifThenMap
-    )
+module Prima.Extra exposing (ifThenMap, ifThenElse, ifThenElseCmds, ifThenElseMap)
+
+{-|
+
+@docs ifThenMap, ifThenElse, ifThenElseCmds, ifThenElseMap
+
+-}
 
 
+{-| -}
 ifThenElseCmds : Bool -> List (Cmd msg) -> List (Cmd msg) -> Cmd msg
 ifThenElseCmds condition cmds1 cmds2 =
     if condition then
@@ -15,6 +17,7 @@ ifThenElseCmds condition cmds1 cmds2 =
         Cmd.batch cmds2
 
 
+{-| -}
 ifThenElse : Bool -> anything -> anything -> anything
 ifThenElse condition a b =
     if condition then
@@ -24,6 +27,7 @@ ifThenElse condition a b =
         b
 
 
+{-| -}
 ifThenMap : (m -> Bool) -> (m -> m) -> m -> m
 ifThenMap condition mapper m =
     if condition m then
@@ -45,6 +49,7 @@ eg.
 -}
 
 
+{-| -}
 ifThenElseMap : (m -> Bool) -> (m -> a) -> (m -> a) -> m -> a
 ifThenElseMap condition mapper1 mapper2 m =
     if condition m then

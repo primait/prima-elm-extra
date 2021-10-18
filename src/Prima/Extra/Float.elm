@@ -1,18 +1,13 @@
-module Prima.Extra.Float exposing
-    ( takePriceDecimalPart
-    , takePriceIntegerPart
-    )
+module Prima.Extra.Float exposing (takePriceDecimalPart)
+
+{-|
+
+@docs takePriceDecimalPart
+
+-}
 
 
+{-| -}
 takePriceDecimalPart : Float -> Int
 takePriceDecimalPart float =
     modBy 100 (round (float * 100))
-
-
-
--- ??
-
-
-takePriceIntegerPart : Float -> Int
-takePriceIntegerPart price =
-    floor price

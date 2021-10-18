@@ -1,11 +1,15 @@
-module Prima.Extra.Time exposing
-    ( intToMaybeMonth
-    , toEnUsFormat
-    )
+module Prima.Extra.Time exposing (intToMaybeMonth, toEnUsFormat)
+
+{-|
+
+@docs intToMaybeMonth, toEnUsFormat
+
+-}
 
 import Time exposing (Month)
 
 
+{-| -}
 toEnUsFormat : String -> String
 toEnUsFormat date =
     date
