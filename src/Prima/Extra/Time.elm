@@ -26,7 +26,12 @@ toEnUsFormat date =
         |> String.join "/"
 
 
-{-| There is a default non maybe utility for this in Elm Time: `numberToMonth` that assign December to every number greater than 11
+{-| Maps a month index (within the domain [1-12] ) to a Month.
+
+    intToMaybeMonth 1 -- => Just Time.Jan
+
+    intToMaybeMonth 999 -- => Nothing
+
 -}
 intToMaybeMonth : Int -> Maybe Month
 intToMaybeMonth int =
