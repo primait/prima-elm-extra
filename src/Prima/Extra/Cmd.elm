@@ -3,7 +3,6 @@ module Prima.Extra.Cmd exposing
     , cmdMap
     , mapAfterCmds
     , mapCmds
-    , sendCmdMsg
     , withChildrenCmds
     , withCmd
     , withCmds
@@ -17,6 +16,7 @@ module Prima.Extra.Cmd exposing
     , ifThenElseCmdsMap
     , ifThenElseCmds
     , delayMsg
+    , toCmd
     )
 
 {-| Update function helpers
@@ -25,7 +25,6 @@ module Prima.Extra.Cmd exposing
 @docs cmdMap
 @docs mapAfterCmds
 @docs mapCmds
-@docs sendCmdMsg
 @docs withChildrenCmds
 @docs withCmd
 @docs withCmds
@@ -47,18 +46,25 @@ module Prima.Extra.Cmd exposing
 # Effects
 
 @docs delayMsg
+@docs toCmd
 
 -}
 
-import Prima.Extra
 import Process
 import Task
 
 
-{-| Wraps a msg within a Cmd
+{-| Lifts a msg to a Cmd.
+
+**warning:** this is usually an antipattern.
+
+There are specific case in which this can be used
+(such as [flip](https://css-tricks.com/animating-layouts-with-the-flip-technique/) animations) but
+unless you encountered such edge cases, be sure to double check if there are different approaches possible
+
 -}
-sendCmdMsg : msg -> Cmd msg
-sendCmdMsg =
+toCmd : msg -> Cmd msg
+toCmd =
     Task.perform identity << Task.succeed
 
 
