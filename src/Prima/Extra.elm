@@ -16,7 +16,7 @@ module Prima.Extra exposing (ifThenMap, ifThenElse, ifThenElseMap)
         ifThenElse False "_" "x" -- => "x"
 
 -}
-ifThenElse : Bool -> anything -> anything -> anything
+ifThenElse : Bool -> a -> a -> a
 ifThenElse condition a b =
     if condition then
         a
@@ -34,7 +34,7 @@ ifThenElse condition a b =
                     (\_ -> [ "Cannot find users matching this query" ])
 
 -}
-ifThenMap : (m -> Bool) -> (m -> m) -> m -> m
+ifThenMap : (a -> Bool) -> (a -> a) -> a -> a
 ifThenMap condition mapper m =
     if condition m then
         mapper m
@@ -54,7 +54,7 @@ eg.
         |> withoutCmds []
 
 -}
-ifThenElseMap : (m -> Bool) -> (m -> a) -> (m -> a) -> m -> a
+ifThenElseMap : (a -> Bool) -> (a -> b) -> (a -> b) -> a -> b
 ifThenElseMap condition mapper1 mapper2 m =
     if condition m then
         mapper1 m

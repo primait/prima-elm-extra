@@ -5,10 +5,8 @@
     "exposed-modules": [
         "Prima.Extra",
         "Prima.Extra.Cmd",
-        "Prima.Extra.Float",
         "Prima.Extra.Function",
-        "Prima.Extra.String",
-        "Prima.Extra.Time"
+        "Prima.Extra.String"
     ],
     "license": "BSD-3-Clause",
     "version": "0.0.1",

@@ -12,11 +12,10 @@ module Prima.Extra.Cmd exposing
     , ifThenCmd
     , ifThenCmdMap
     , ifThenCmds
-    , ifThenElseCmds
     , ifThenCmdsMap
-    , ifThenElseCmd
     , ifThenElseCmdMap
     , ifThenElseCmdsMap
+    , ifThenElseCmds
     , delayMsg
     )
 
@@ -39,11 +38,10 @@ module Prima.Extra.Cmd exposing
 @docs ifThenCmd
 @docs ifThenCmdMap
 @docs ifThenCmds
-@docs ifThenElseCmds
 @docs ifThenCmdsMap
-@docs ifThenElseCmd
 @docs ifThenElseCmdMap
 @docs ifThenElseCmdsMap
+@docs ifThenElseCmds
 
 
 # Effects
@@ -57,13 +55,15 @@ import Process
 import Task
 
 
-{-| -}
+{-| Wraps a msg within a Cmd
+-}
 sendCmdMsg : msg -> Cmd msg
 sendCmdMsg =
     Task.perform identity << Task.succeed
 
 
-{-| -}
+{-| Create a Cmd that triggers the given msg after n milliseconds
+-}
 delayMsg : Int -> msg -> Cmd msg
 delayMsg millis msg =
     Process.sleep (toFloat millis)
@@ -89,16 +89,6 @@ ifThenCmds condition cmds =
 
     else
         Cmd.none
-
-
-{-| -}
-ifThenElseCmd : Bool -> Cmd msg -> Cmd msg -> Cmd msg
-ifThenElseCmd condition cmd1 cmd2 =
-    if condition then
-        cmd1
-
-    else
-        cmd2
 
 
 {-| Maps the given Cmd suppliers to the same value. Usually used like that:
@@ -146,7 +136,11 @@ ifThenCmdsMap condition cmdList a =
 {-| -}
 ifThenElseCmdMap : (a -> Bool) -> (a -> Cmd msg) -> (a -> Cmd msg) -> a -> Cmd msg
 ifThenElseCmdMap condition cmd1 cmd2 a =
-    ifThenElseCmd (condition a) (cmd1 a) (cmd2 a)
+    if condition a then
+        cmd1 a
+
+    else
+        cmd2 a
 
 
 {-| -}

@@ -1,17 +1,10 @@
-module Prima.Extra.String exposing (capitalize, isEmpty)
+module Prima.Extra.String exposing (capitalize)
 
 {-|
 
-@docs capitalize, isEmpty
+@docs capitalize
 
 -}
-
-
-{-| Checks whether a string is empty
--}
-isEmpty : String -> Bool
-isEmpty =
-    (==) ""
 
 
 {-|
