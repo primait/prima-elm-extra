@@ -20,7 +20,7 @@ module Prima.Extra.Cmd exposing
     , delayMsg
     )
 
-{-|
+{-| Update function helpers
 
 @docs batchMap
 @docs cmdMap
@@ -101,7 +101,20 @@ ifThenElseCmd condition cmd1 cmd2 =
         cmd2
 
 
-{-| -}
+{-| Maps the given Cmd suppliers to the same value. Usually used like that:
+
+    fetchUsers : Model -> Cmd Msg
+    sendLog : Model -> Cmd Msg
+    initializeAnalytics : Model -> Cmd Msg
+
+    model
+        |> cmdMap
+            [ fetchUsers
+            , sendLog
+            , initializeAnalytics
+            ]
+
+-}
 cmdMap : List (a -> Cmd msg) -> a -> List (Cmd msg)
 cmdMap cmds a =
     cmds
