@@ -1,14 +1,6 @@
 module Prima.Extra.Cmd exposing
     ( batchMap
     , cmdMap
-    , delayMsg
-    , ifThenCmd
-    , ifThenCmdMap
-    , ifThenCmds
-    , ifThenCmdsMap
-    , ifThenElseCmd
-    , ifThenElseCmdMap
-    , ifThenElseCmdsMap
     , mapAfterCmds
     , mapCmds
     , sendCmdMsg
@@ -17,20 +9,21 @@ module Prima.Extra.Cmd exposing
     , withCmds
     , withCmdsMap
     , withoutCmds
+    , ifThenCmd
+    , ifThenCmdMap
+    , ifThenCmds
+    , ifThenElseCmds
+    , ifThenCmdsMap
+    , ifThenElseCmd
+    , ifThenElseCmdMap
+    , ifThenElseCmdsMap
+    , delayMsg
     )
 
 {-|
 
 @docs batchMap
 @docs cmdMap
-@docs delayMsg
-@docs ifThenCmd
-@docs ifThenCmdMap
-@docs ifThenCmds
-@docs ifThenCmdsMap
-@docs ifThenElseCmd
-@docs ifThenElseCmdMap
-@docs ifThenElseCmdsMap
 @docs mapAfterCmds
 @docs mapCmds
 @docs sendCmdMsg
@@ -39,6 +32,23 @@ module Prima.Extra.Cmd exposing
 @docs withCmds
 @docs withCmdsMap
 @docs withoutCmds
+
+
+# Conditionals
+
+@docs ifThenCmd
+@docs ifThenCmdMap
+@docs ifThenCmds
+@docs ifThenElseCmds
+@docs ifThenCmdsMap
+@docs ifThenElseCmd
+@docs ifThenElseCmdMap
+@docs ifThenElseCmdsMap
+
+
+# Effects
+
+@docs delayMsg
 
 -}
 
@@ -131,10 +141,20 @@ ifThenElseCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> List (a -> Cmd msg) ->
 ifThenElseCmdsMap condition cmds1 cmds2 a =
     -- this if is redundant but avoids to execute eventual Debug.log functions inside command list
     if condition a then
-        Prima.Extra.ifThenElseCmds (condition a) (cmdMap cmds1 a) []
+        ifThenElseCmds (condition a) (cmdMap cmds1 a) []
 
     else
-        Prima.Extra.ifThenElseCmds (condition a) [] (cmdMap cmds2 a)
+        ifThenElseCmds (condition a) [] (cmdMap cmds2 a)
+
+
+{-| -}
+ifThenElseCmds : Bool -> List (Cmd msg) -> List (Cmd msg) -> Cmd msg
+ifThenElseCmds condition cmds1 cmds2 =
+    if condition then
+        Cmd.batch cmds1
+
+    else
+        Cmd.batch cmds2
 
 
 {-| -}

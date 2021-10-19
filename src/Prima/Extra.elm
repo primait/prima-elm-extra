@@ -1,23 +1,21 @@
-module Prima.Extra exposing (ifThenMap, ifThenElse, ifThenElseCmds, ifThenElseMap)
+module Prima.Extra exposing (ifThenMap, ifThenElse, ifThenElseMap)
 
 {-|
 
-@docs ifThenMap, ifThenElse, ifThenElseCmds, ifThenElseMap
+
+# Conditionals
+
+@docs ifThenMap, ifThenElse, ifThenElseMap
 
 -}
 
 
-{-| -}
-ifThenElseCmds : Bool -> List (Cmd msg) -> List (Cmd msg) -> Cmd msg
-ifThenElseCmds condition cmds1 cmds2 =
-    if condition then
-        Cmd.batch cmds1
+{-| If function
 
-    else
-        Cmd.batch cmds2
+        ifThenElse True "x" "_" -- => "x"
+        ifThenElse False "_" "x" -- => "x"
 
-
-{-| -}
+-}
 ifThenElse : Bool -> anything -> anything -> anything
 ifThenElse condition a b =
     if condition then
@@ -27,7 +25,15 @@ ifThenElse condition a b =
         b
 
 
-{-| -}
+{-| Maps the value whether the given predicate holds true for that value
+
+        showResults : List String -> List String
+        showResults xs =
+            xs
+                |> ifThenMap List.isEmpty
+                    (\_ -> [ "Cannot find users matching this query" ])
+
+-}
 ifThenMap : (m -> Bool) -> (m -> m) -> m -> m
 ifThenMap condition mapper m =
     if condition m then
@@ -37,19 +43,17 @@ ifThenMap condition mapper m =
         m
 
 
-
-{--| conditional if that can be used in update circuits to avoid parenthesis/anonymous functions
+{-| Conditional if that can be used in update circuits to avoid parenthesis/anonymous functions
 eg.
-  model
-    |> doSomethingNiceWithModel
-    |> ifThenElseMap someBooleanConditionBasedOnModel
-        changeModelIfTrue
-        changeModelIfFalse
-    |> withoutCmds []
+
+        model
+        |> doSomethingNiceWithModel
+        |> ifThenElseMap someBooleanConditionBasedOnModel
+            changeModelIfTrue
+            changeModelIfFalse
+        |> withoutCmds []
+
 -}
-
-
-{-| -}
 ifThenElseMap : (m -> Bool) -> (m -> a) -> (m -> a) -> m -> a
 ifThenElseMap condition mapper1 mapper2 m =
     if condition m then
