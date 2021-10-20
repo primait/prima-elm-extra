@@ -1,0 +1,7 @@
+{
+  "name": "prima-elm-extra",
+  "repository": "git@github.com:primait/prima-elm-extra.git",
+  "devDependencies": {
+    "elm-analyse": "^0.16.5"
+  }
+}
