@@ -1,4 +1,4 @@
-module Prima.Extra.String exposing (capitalize)
+module PrimaString exposing (capitalize)
 
 {-|
 

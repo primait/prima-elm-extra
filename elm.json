@@ -3,10 +3,10 @@
     "name": "primait/prima-elm-extra",
     "summary": "utilities for prima elm codebases",
     "exposed-modules": [
-        "Prima.Extra",
-        "Prima.Extra.Cmd",
-        "Prima.Extra.Function",
-        "Prima.Extra.String"
+        "PrimaCmd",
+        "PrimaFunction",
+        "PrimaString",
+        "PrimaUpdate"
     ],
     "license": "BSD-3-Clause",
     "version": "0.0.1",

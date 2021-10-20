@@ -1,52 +1,22 @@
-module Prima.Extra.Cmd exposing
-    ( batchMap
-    , cmdMap
-    , mapAfterCmds
-    , mapCmds
-    , withChildrenCmds
-    , withCmd
-    , withCmds
-    , withCmdsMap
-    , withoutCmds
-    , ifThenCmd
-    , ifThenCmdMap
-    , ifThenCmds
-    , ifThenCmdsMap
-    , ifThenElseCmdMap
-    , ifThenElseCmdsMap
-    , ifThenElseCmds
-    , delayMsg
-    , toCmd
+module PrimaCmd exposing
+    ( batchMap, cmdMap
+    , ifThenCmd, ifThenCmdMap, ifThenCmds, ifThenCmdsMap, ifThenElseCmdMap, ifThenElseCmdsMap, ifThenElseCmds
+    , delayMsg, toCmd
     )
 
-{-| Update function helpers
+{-|
 
-@docs batchMap
-@docs cmdMap
-@docs mapAfterCmds
-@docs mapCmds
-@docs withChildrenCmds
-@docs withCmd
-@docs withCmds
-@docs withCmdsMap
-@docs withoutCmds
+@docs batchMap, cmdMap
 
 
 # Conditionals
 
-@docs ifThenCmd
-@docs ifThenCmdMap
-@docs ifThenCmds
-@docs ifThenCmdsMap
-@docs ifThenElseCmdMap
-@docs ifThenElseCmdsMap
-@docs ifThenElseCmds
+@docs ifThenCmd, ifThenCmdMap, ifThenCmds, ifThenCmdsMap, ifThenElseCmdMap, ifThenElseCmdsMap, ifThenElseCmds
 
 
 # Effects
 
-@docs delayMsg
-@docs toCmd
+@docs delayMsg, toCmd
 
 -}
 
@@ -168,46 +138,3 @@ ifThenElseCmds condition cmds1 cmds2 =
 
     else
         Cmd.batch cmds2
-
-
-{-| -}
-withCmd : Cmd msg -> model -> ( model, Cmd msg )
-withCmd cmd model =
-    ( model, cmd )
-
-
-{-| -}
-withCmds : List (Cmd msg) -> model -> ( model, Cmd msg )
-withCmds cmds model =
-    ( model, Cmd.batch cmds )
-
-
-{-| -}
-withoutCmds : model -> ( model, Cmd msg )
-withoutCmds model =
-    ( model, Cmd.none )
-
-
-{-| -}
-withChildrenCmds : (childrenMsg -> msg) -> ( model, Cmd childrenMsg ) -> ( model, Cmd msg )
-withChildrenCmds mapper ( model, childrenCmd ) =
-    ( model, Cmd.map mapper childrenCmd )
-
-
-{-| Used to apply an updated model to the cmds in fluid style updating
--}
-withCmdsMap : List (model -> Cmd msg) -> model -> ( model, Cmd msg )
-withCmdsMap cmdFunctions model =
-    ( model, Cmd.batch <| List.map (\fun -> fun model) cmdFunctions )
-
-
-{-| -}
-mapAfterCmds : (model -> model) -> ( model, Cmd msg ) -> ( model, Cmd msg )
-mapAfterCmds mapper ( model, cmds ) =
-    ( mapper model, cmds )
-
-
-{-| -}
-mapCmds : (msg -> otherMsg) -> ( model, Cmd msg ) -> ( model, Cmd otherMsg )
-mapCmds mapper ( model, cmds ) =
-    ( model, Cmd.map mapper cmds )
