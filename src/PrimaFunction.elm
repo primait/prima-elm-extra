@@ -1,6 +1,6 @@
 module PrimaFunction exposing
     ( curry, uncurry, flip
-    , ifThenMap, ifThenElse, ifThenElseMap
+    , ifThenElse, ifThenMap, ifThenElseMap
     )
 
 {-|
@@ -10,7 +10,7 @@ module PrimaFunction exposing
 
 # Functional conditionals
 
-@docs ifThenMap, ifThenElse, ifThenElseMap
+@docs ifThenElse, ifThenMap, ifThenElseMap
 
 -}
 

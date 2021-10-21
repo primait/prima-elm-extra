@@ -1,7 +1,8 @@
 module PrimaCmd exposing
     ( batchMap, cmdMap
     , ifThenCmd, ifThenCmdMap, ifThenCmds, ifThenCmdsMap, ifThenElseCmdMap, ifThenElseCmdsMap, ifThenElseCmds
-    , delayMsg, toCmd
+    , fromMsg
+    , fromMsgWithDelay
     )
 
 {-|
@@ -16,7 +17,7 @@ module PrimaCmd exposing
 
 # Effects
 
-@docs delayMsg, toCmd
+@docs delayMsg, fromMsg
 
 -}
 
@@ -33,15 +34,15 @@ There are specific case in which this can be used
 unless you encountered such edge cases, be sure to double check if there are different approaches possible
 
 -}
-toCmd : msg -> Cmd msg
-toCmd =
+fromMsg : msg -> Cmd msg
+fromMsg =
     Task.perform identity << Task.succeed
 
 
 {-| Create a Cmd that triggers the given msg after n milliseconds
 -}
-delayMsg : Int -> msg -> Cmd msg
-delayMsg millis msg =
+fromMsgWithDelay : Int -> msg -> Cmd msg
+fromMsgWithDelay millis msg =
     Process.sleep (toFloat millis)
         |> Task.andThen (Task.succeed msg |> always)
         |> Task.perform identity

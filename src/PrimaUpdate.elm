@@ -23,6 +23,12 @@ module PrimaUpdate exposing
             |> PrimaUpdate.withCmd fetchUsers
 
 -}
+
+
+
+-- TODO need this comment for the drone build to fail (via elm-analyse)
+
+
 type alias Update model msg =
     ( model, Cmd msg )
 
@@ -43,7 +49,11 @@ withCmds cmds model =
 -}
 withCmdsMap : List (model -> Cmd msg) -> model -> Update model msg
 withCmdsMap cmdFunctions model =
-    ( model, Cmd.batch <| List.map (\fun -> fun model) cmdFunctions )
+    ( model
+    , cmdFunctions
+        |> List.map (\f -> f model)
+        |> Cmd.batch
+    )
 
 
 
@@ -83,118 +93,6 @@ mapCmd mapper ( model, cmds ) =
 
 
 -- Monad instance
-{- Proof: (TODO double check)
-
-   1. withoutCmds model |> andThen f =?? f model
-
-        withoutCmds model |> andThen f
-
-        ==
-
-        (model, Cmd.none) |> andThen f
-
-        ==
-
-        let (newModel, newCmd) = f model
-        in (newModel, Cmd.batch [Cmd.none, newCmd])
-
-        ==
-
-        let (newModel, newCmd) = f model
-        in (newModel, newCmd)
-
-        ==
-
-        f model (OK)
-
-    2. (model, cmd) |> andThen withoutCmds =?? (model, cmd)
-
-        (model, cmd) |> andThen withoutCmds
-
-        ==
-
-        let (newModel, newCmd) = withoutCmds model
-        in (newModel, Cmd.batch [cmd, newCmd])
-
-        ==
-
-        (model, Cmd.batch [cmd, Cmd.none])
-
-        ==
-
-        (model, cmd) (OK)
-
-    3.  (m, cmd) |> andThen (\m -> f m |> andThen g) =?? (m, cmd) |> andThen f |> andThen g
-
-
-        a) (m, cmd) |> andThen (\m_ -> f m_ |> andThen g)
-
-        ==
-
-        let ( m1, cmd1 ) = (\m_ -> f m_ |> andThen g) m in
-        ( m1, Cmd.batch [ cmd, cmd1 ] )
-
-        ==
-
-        let ( m1, cmd1 ) = f m |> andThen g in
-        ( m1, Cmd.batch [ cmd, cmd1 ] )
-
-        ==
-
-        let ( m1, cmd1 ) = (
-            let (m2, cmd2) = f m in
-            (m2, cmd2) |> andThen g
-        ) in
-        ( m1, Cmd.batch [ cmd, cmd1 ] )
-
-        ==
-
-        let ( m1, cmd1 ) = (
-            let (m2, cmd2) = f m in
-            let (m3, cmd3) = g m2 in
-            (m3, Cmd.batch [ cmd2, cmd3 ])
-        ) in
-        ( m1, Cmd.batch [ cmd, cmd1 ] )
-
-        ==
-
-        let (m2, cmd2) = f m in
-        let (m3, cmd3) = g m2 in
-        let ( m1, cmd1 ) =  (m3, Cmd.batch [ cmd2, cmd3 ]) in
-        ( m1, Cmd.batch [ cmd, cmd1 ] )
-
-        ==
-
-        let (m2, cmd2) = f m in
-        let (m3, cmd3) = g m2 in
-        ( m3, Cmd.batch [ cmd, Cmd.batch [ cmd2, cmd3 ]] )
-
-        ==
-
-        let (m2, cmd2) = f m in
-        let (m3, cmd3) = g m2 in
-        ( m3, Cmd.batch [ cmd, cmd2, cmd3 ] )
-
-
-        b) ((m, cmd) |> andThen f) |> andThen g ==
-
-        (let (m1, cmd1) = f m
-         in (m1, Cmd.batch [cmd, cmd1]))
-        |> andThen g
-
-        ==
-
-        let (m1, cmd1) = f m in
-        let (m2, cmd2) = g m1 in
-        in (m2, Cmd.batch [Cmd.batch [cmd, cmd1], cmd2]
-
-        ==
-
-        let (m1, cmd1) = f m in
-        let (m2, cmd2) = g m1 in
-        in (m2, Cmd.batch [cmd, cmd1, cmd2])  (OK)
-
--}
 
 
 {-| Lifts a model to a `(model, Cmd msg)` pair
