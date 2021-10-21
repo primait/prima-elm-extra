@@ -1,6 +1,6 @@
 module PrimaUpdate exposing
     ( Update
-    , withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd
+    , withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd, getModel, getCmd
     )
 
 {-| Update function helpers
@@ -10,7 +10,7 @@ module PrimaUpdate exposing
 
 # Update helpers
 
-@docs withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd
+@docs withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd, getModel, getCmd
 
 -}
 
@@ -31,6 +31,20 @@ module PrimaUpdate exposing
 
 type alias Update model msg =
     ( model, Cmd msg )
+
+
+{-| Alias for Tuple.first
+-}
+getModel : Update model x -> model
+getModel =
+    Tuple.first
+
+
+{-| Alias for Tuple.second
+-}
+getCmd : Update x msg -> Cmd msg
+getCmd =
+    Tuple.second
 
 
 {-| -}
