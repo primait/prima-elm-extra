@@ -48,21 +48,30 @@ suite =
         , describe "ifThenMap"
             [ test "with truthy argument should apply the given function" <|
                 \() ->
-                    PrimaFunction.ifThenMap String.isEmpty ((++) "!") ""
+                    ""
+                        |> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
                         |> Expect.equal "!"
             , test "with falsy argument should not apply the given function" <|
                 \() ->
-                    PrimaFunction.ifThenMap String.isEmpty ((++) "!") "NOT_EMPTY"
+                    "NOT_EMPTY"
+                        |> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
                         |> Expect.equal "NOT_EMPTY"
             ]
         , describe "ifThenElseMap"
             [ test "with truthy argument should apply the first function" <|
                 \() ->
-                    PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1) []
+                    []
+                        |> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
                         |> Expect.equal [ 100 ]
             , test "with falsy argument should apply the second function" <|
                 \() ->
-                    PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1) [ 0, 10, 20 ]
+                    [ 0, 10, 20 ]
+                        |> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
                         |> Expect.equal [ 0 ]
+            , test "type regression test" <|
+                \() ->
+                    42
+                        |> PrimaFunction.ifThenElseMap (always True) String.fromInt String.fromInt
+                        |> Expect.equal "42"
             ]
         ]
