@@ -1,5 +1,5 @@
 module PrimaCmd exposing
-    ( batchMap, cmdMap
+    ( batchMap, cmdMap, fromMaybeMap
     , ifThenCmd, ifThenCmdMap, ifThenCmds, ifThenCmdsMap, ifThenElseCmdMap, ifThenElseCmdsMap, ifThenElseCmds
     , fromMsg
     , fromMsgWithDelay
@@ -7,7 +7,7 @@ module PrimaCmd exposing
 
 {-|
 
-@docs batchMap, cmdMap
+@docs batchMap, cmdMap, fromMaybeMap
 
 
 # Conditionals
@@ -139,3 +139,13 @@ ifThenElseCmds condition cmds1 cmds2 =
 
     else
         Cmd.batch cmds2
+
+
+fromMaybeMap : (a -> Cmd msg) -> Maybe a -> Cmd msg
+fromMaybeMap command maybe =
+    case maybe of
+        Just a ->
+            command a
+
+        Nothing ->
+            Cmd.none
