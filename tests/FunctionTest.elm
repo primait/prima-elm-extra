@@ -18,18 +18,18 @@ suite =
                 )
             ]
         , describe "flip"
-            [ fuzz2 (Fuzz.list Fuzz.int) Fuzz.int "flip should flip it's arguments arguments" <|
+            [ fuzz2 (Fuzz.list Fuzz.int) Fuzz.int "flip should flip its arguments arguments" <|
                 (List.member
                     |> PrimaFunction.flip
                     |> TestHelpers.shouldBehaveLike2 (\x y -> List.member y x)
                 )
             ]
         , describe "ifThenElse"
-            [ test "with truthy argument should return it's first value" <|
+            [ test "with truthy argument should return its first value" <|
                 \() ->
                     PrimaFunction.ifThenElse True 0 1
                         |> Expect.equal 0
-            , test "with falsy argument should return it's second value" <|
+            , test "with falsy argument should return its second value" <|
                 \() ->
                     PrimaFunction.ifThenElse False 0 1
                         |> Expect.equal 1
