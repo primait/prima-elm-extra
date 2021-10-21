@@ -11,14 +11,14 @@ suite : Test
 suite =
     describe "PrimaFunction tests"
         [ describe "withoutCmds"
-            [ (PrimaUpdate.withoutCmds >> PrimaUpdate.getModel)
+            [ (PrimaUpdate.withoutCmds >> getModel)
                 |> TestHelpers.shouldBehaveLike identity
                 |> fuzz Fuzz.int "wraps the model"
             , test "does not perform side effects" <|
                 \() ->
                     ()
                         |> PrimaUpdate.withoutCmds
-                        |> PrimaUpdate.getCmd
+                        |> getCmd
                         |> Expect.equal Cmd.none
             ]
         , describe "mapModel"
@@ -39,3 +39,13 @@ fuzzUpdate fuzzModel =
 increment : Int -> Int
 increment =
     (+) 1
+
+
+getModel : PrimaUpdate model x -> model
+getModel =
+    Tuple.first
+
+
+getCmd : PrimaUpdate x msg -> Cmd msg
+getCmd =
+    Tuple.second

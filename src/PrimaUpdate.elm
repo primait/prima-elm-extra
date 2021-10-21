@@ -1,18 +1,20 @@
 module PrimaUpdate exposing
-    ( withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd, getModel, getCmd
-    , PrimaUpdate
+    ( PrimaUpdate
+    , withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd
     )
 
 {-| Update function helpers
 
-@docs Update
+@docs PrimaUpdate
 
 
 # Update helpers
 
-@docs withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd, getModel, getCmd
+@docs withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd
 
 -}
+
+-- TODO need this comment for the drone build to fail (via elm-analyse)
 
 
 {-| The alias for a `(Model, Cmd Msg)` pair.
@@ -23,28 +25,8 @@ module PrimaUpdate exposing
             |> PrimaUpdate.withCmd fetchUsers
 
 -}
-
-
-
--- TODO need this comment for the drone build to fail (via elm-analyse)
-
-
 type alias PrimaUpdate model msg =
     ( model, Cmd msg )
-
-
-{-| Alias for Tuple.first
--}
-getModel : PrimaUpdate model x -> model
-getModel =
-    Tuple.first
-
-
-{-| Alias for Tuple.second
--}
-getCmd : PrimaUpdate x msg -> Cmd msg
-getCmd =
-    Tuple.second
 
 
 {-| -}
