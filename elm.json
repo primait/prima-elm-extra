@@ -5,7 +5,6 @@
     "exposed-modules": [
         "PrimaCmd",
         "PrimaFunction",
-        "PrimaString",
         "PrimaUpdate"
     ],
     "license": "BSD-3-Clause",

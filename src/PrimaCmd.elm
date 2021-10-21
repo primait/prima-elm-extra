@@ -1,8 +1,7 @@
 module PrimaCmd exposing
     ( batchMap, cmdMap, fromMaybeMap
     , ifThenCmd, ifThenCmdMap, ifThenCmds, ifThenCmdsMap, ifThenElseCmdMap, ifThenElseCmdsMap, ifThenElseCmds
-    , fromMsg
-    , fromMsgWithDelay
+    , fromMsgWithDelay, fromMsg
     )
 
 {-|
@@ -17,7 +16,7 @@ module PrimaCmd exposing
 
 # Effects
 
-@docs delayMsg, fromMsg
+@docs fromMsgWithDelay, fromMsg
 
 -}
 
@@ -141,6 +140,8 @@ ifThenElseCmds condition cmds1 cmds2 =
         Cmd.batch cmds2
 
 
+{-| Returns Cmd.none when argument is Nothing, maps it otherwise
+-}
 fromMaybeMap : (a -> Cmd msg) -> Maybe a -> Cmd msg
 fromMaybeMap command maybe =
     case maybe of
