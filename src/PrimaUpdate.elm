@@ -65,8 +65,8 @@ withCmdsMap cmdFunctions model =
 
 -}
 mapModel : (model -> otherModel) -> PrimaUpdate model msg -> PrimaUpdate otherModel msg
-mapModel mapper ( model, cmds ) =
-    ( mapper model, cmds )
+mapModel =
+    Tuple.mapFirst
 
 
 {-| `Cmd.map`s the pair cmd, preserving the model
