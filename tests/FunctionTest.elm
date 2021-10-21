@@ -11,18 +11,16 @@ suite : Test
 suite =
     describe "PrimaFunction tests"
         [ describe "(un)curry"
-            [ fuzz2 Fuzz.int (Fuzz.list Fuzz.int) "(uncurry >> curry) List.member == List.member" <|
-                (List.member
-                    |> (PrimaFunction.uncurry >> PrimaFunction.curry)
-                    |> TestHelpers.shouldBehaveLike2 List.member
-                )
+            [ List.member
+                |> (PrimaFunction.uncurry >> PrimaFunction.curry)
+                |> TestHelpers.shouldBehaveLike2 List.member
+                |> fuzz2 Fuzz.int (Fuzz.list Fuzz.int) "(uncurry >> curry) List.member == List.member"
             ]
         , describe "flip"
-            [ fuzz2 (Fuzz.list Fuzz.int) Fuzz.int "flip should flip its arguments arguments" <|
-                (List.member
-                    |> PrimaFunction.flip
-                    |> TestHelpers.shouldBehaveLike2 (\x y -> List.member y x)
-                )
+            [ List.member
+                |> PrimaFunction.flip
+                |> TestHelpers.shouldBehaveLike2 (\x y -> List.member y x)
+                |> fuzz2 (Fuzz.list Fuzz.int) Fuzz.int "flip should flip its arguments arguments"
             ]
         , describe "ifThenElse"
             [ test "with truthy argument should return its first value" <|
@@ -33,17 +31,16 @@ suite =
                 \() ->
                     PrimaFunction.ifThenElse False 0 1
                         |> Expect.equal 1
-            , fuzz3 Fuzz.bool Fuzz.int Fuzz.int "should behave like an if expression" <|
-                (PrimaFunction.ifThenElse
-                    |> TestHelpers.shouldBehaveLike3
-                        (\b x y ->
-                            if b then
-                                x
+            , PrimaFunction.ifThenElse
+                |> TestHelpers.shouldBehaveLike3
+                    (\b x y ->
+                        if b then
+                            x
 
-                            else
-                                y
-                        )
-                )
+                        else
+                            y
+                    )
+                |> fuzz3 Fuzz.bool Fuzz.int Fuzz.int "should behave like an if expression"
             ]
         , describe "ifThenMap"
             [ test "with truthy argument should apply the given function" <|

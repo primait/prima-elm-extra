@@ -11,10 +11,9 @@ suite : Test
 suite =
     describe "PrimaFunction tests"
         [ describe "withoutCmds"
-            [ fuzz Fuzz.int "wraps the model" <|
-                ((PrimaUpdate.withoutCmds >> PrimaUpdate.getModel)
-                    |> TestHelpers.shouldBehaveLike identity
-                )
+            [ (PrimaUpdate.withoutCmds >> PrimaUpdate.getModel)
+                |> TestHelpers.shouldBehaveLike identity
+                |> fuzz Fuzz.int "wraps the model"
             , test "does not perform side effects" <|
                 \() ->
                     ()
@@ -23,10 +22,9 @@ suite =
                         |> Expect.equal Cmd.none
             ]
         , describe "mapModel"
-            [ fuzz (fuzzUpdate Fuzz.int) "wraps the model" <|
-                (PrimaUpdate.mapModel increment
-                    |> TestHelpers.shouldBehaveLike (Tuple.mapFirst increment)
-                )
+            [ PrimaUpdate.mapModel increment
+                |> TestHelpers.shouldBehaveLike (Tuple.mapFirst increment)
+                |> fuzz (fuzzUpdate Fuzz.int) "wraps the model"
             ]
         ]
 
