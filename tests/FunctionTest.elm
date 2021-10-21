@@ -1,19 +1,10 @@
 module FunctionTest exposing (..)
 
-import Expect exposing (Expectation)
+import Expect
 import Fuzz
 import PrimaFunction
 import Test exposing (..)
-
-
-behavesLike : (a -> b) -> (a -> b) -> a -> Expectation
-behavesLike f g x =
-    Expect.equal (f x) (g x)
-
-
-behavesLike2 : (a -> b -> c) -> (a -> b -> c) -> a -> b -> Expectation
-behavesLike2 f g x y =
-    Expect.equal (f x y) (g x y)
+import TestHelpers
 
 
 suite : Test
@@ -23,14 +14,35 @@ suite =
             [ fuzz2 Fuzz.int (Fuzz.list Fuzz.int) "(uncurry >> curry) List.member == List.member" <|
                 (List.member
                     |> (PrimaFunction.uncurry >> PrimaFunction.curry)
-                    |> behavesLike2 List.member
+                    |> TestHelpers.shouldBehaveLike2 List.member
                 )
             ]
         , describe "flip"
             [ fuzz2 (Fuzz.list Fuzz.int) Fuzz.int "flip should flip it's arguments arguments" <|
                 (List.member
                     |> PrimaFunction.flip
-                    |> behavesLike2 (\x y -> List.member y x)
+                    |> TestHelpers.shouldBehaveLike2 (\x y -> List.member y x)
+                )
+            ]
+        , describe "ifThenElse"
+            [ test "with truthy argument should return it's first value" <|
+                \() ->
+                    PrimaFunction.ifThenElse True 0 1
+                        |> Expect.equal 0
+            , test "with falsy argument should return it's second value" <|
+                \() ->
+                    PrimaFunction.ifThenElse False 0 1
+                        |> Expect.equal 1
+            , fuzz3 Fuzz.bool Fuzz.int Fuzz.int "should behave like an if expression" <|
+                (PrimaFunction.ifThenElse
+                    |> TestHelpers.shouldBehaveLike3
+                        (\b x y ->
+                            if b then
+                                x
+
+                            else
+                                y
+                        )
                 )
             ]
         ]
