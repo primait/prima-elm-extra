@@ -2,7 +2,7 @@ module UpdateTest exposing (..)
 
 import Expect
 import Fuzz
-import PrimaUpdate exposing (Update)
+import PrimaUpdate exposing (PrimaUpdate)
 import Test exposing (..)
 import TestHelpers
 
@@ -33,7 +33,7 @@ suite =
 
 {-| does not fuzz Cmd expect for Cmd.none
 -}
-fuzzUpdate : Fuzz.Fuzzer model -> Fuzz.Fuzzer (Update model (Cmd msg))
+fuzzUpdate : Fuzz.Fuzzer model -> Fuzz.Fuzzer (PrimaUpdate model (Cmd msg))
 fuzzUpdate fuzzModel =
     Fuzz.tuple ( fuzzModel, Fuzz.constant Cmd.none )
 

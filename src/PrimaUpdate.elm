@@ -1,6 +1,6 @@
 module PrimaUpdate exposing
-    ( Update
-    , withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd, getModel, getCmd
+    ( withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd, getModel, getCmd
+    , PrimaUpdate
     )
 
 {-| Update function helpers
@@ -29,39 +29,39 @@ module PrimaUpdate exposing
 -- TODO need this comment for the drone build to fail (via elm-analyse)
 
 
-type alias Update model msg =
+type alias PrimaUpdate model msg =
     ( model, Cmd msg )
 
 
 {-| Alias for Tuple.first
 -}
-getModel : Update model x -> model
+getModel : PrimaUpdate model x -> model
 getModel =
     Tuple.first
 
 
 {-| Alias for Tuple.second
 -}
-getCmd : Update x msg -> Cmd msg
+getCmd : PrimaUpdate x msg -> Cmd msg
 getCmd =
     Tuple.second
 
 
 {-| -}
-withCmd : Cmd msg -> model -> Update model msg
+withCmd : Cmd msg -> model -> PrimaUpdate model msg
 withCmd cmd model =
     ( model, cmd )
 
 
 {-| -}
-withCmds : List (Cmd msg) -> model -> Update model msg
+withCmds : List (Cmd msg) -> model -> PrimaUpdate model msg
 withCmds cmds model =
     ( model, Cmd.batch cmds )
 
 
 {-| Used to apply an updated model to the cmds in fluid style updating
 -}
-withCmdsMap : List (model -> Cmd msg) -> model -> Update model msg
+withCmdsMap : List (model -> Cmd msg) -> model -> PrimaUpdate model msg
 withCmdsMap cmdFunctions model =
     ( model
     , cmdFunctions
@@ -82,7 +82,7 @@ withCmdsMap cmdFunctions model =
         |> Expect.equal ({ count = 1 }, Cmd.none)
 
 -}
-mapModel : (model -> otherModel) -> Update model msg -> Update otherModel msg
+mapModel : (model -> otherModel) -> PrimaUpdate model msg -> PrimaUpdate otherModel msg
 mapModel mapper ( model, cmds ) =
     ( mapper model, cmds )
 
@@ -100,7 +100,7 @@ mapModel mapper ( model, cmds ) =
             |> mapCmd String.fromInt
 
 -}
-mapCmd : (msg -> otherMsg) -> Update model msg -> Update model otherMsg
+mapCmd : (msg -> otherMsg) -> PrimaUpdate model msg -> PrimaUpdate model otherMsg
 mapCmd mapper ( model, cmds ) =
     ( model, Cmd.map mapper cmds )
 
@@ -111,7 +111,7 @@ mapCmd mapper ( model, cmds ) =
 
 {-| Lifts a model to a `(model, Cmd msg)` pair
 -}
-withoutCmds : model -> Update model msg
+withoutCmds : model -> PrimaUpdate model msg
 withoutCmds model =
     ( model, Cmd.none )
 
@@ -124,7 +124,7 @@ withoutCmds model =
     -- =>  (anotherModel, Cmd.batch [someCommand, anotherCommand] )
 
 -}
-andThen : (model -> Update otherModel msg) -> Update model msg -> Update otherModel msg
+andThen : (model -> PrimaUpdate otherModel msg) -> PrimaUpdate model msg -> PrimaUpdate otherModel msg
 andThen f ( model, cmds ) =
     let
         ( newModel, newCmds ) =
