@@ -55,4 +55,14 @@ suite =
                     PrimaFunction.ifThenMap String.isEmpty ((++) "!") "NOT_EMPTY"
                         |> Expect.equal "NOT_EMPTY"
             ]
+        , describe "ifThenElseMap"
+            [ test "with truthy argument should apply the first function" <|
+                \() ->
+                    PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1) []
+                        |> Expect.equal [ 100 ]
+            , test "with falsy argument should apply the second function" <|
+                \() ->
+                    PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1) [ 0, 10, 20 ]
+                        |> Expect.equal [ 0 ]
+            ]
         ]
