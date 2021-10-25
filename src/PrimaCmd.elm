@@ -47,7 +47,12 @@ fromMsgWithDelay millis msg =
         |> Task.perform identity
 
 
-{-| -}
+{-|
+
+       ifThenCmd True x -- => x
+       ifThenCmd False x -- => Cmd.none
+
+-}
 ifThenCmd : Bool -> Cmd msg -> Cmd msg
 ifThenCmd condition cmd =
     if condition then
@@ -57,7 +62,12 @@ ifThenCmd condition cmd =
         Cmd.none
 
 
-{-| -}
+{-|
+
+       ifThenCmd True cmds -- => Cmd.batch cmds
+       ifThenCmd False x -- => Cmd.none
+
+-}
 ifThenCmds : Bool -> List (Cmd msg) -> Cmd msg
 ifThenCmds condition cmds =
     if condition then
@@ -87,26 +97,48 @@ cmdMap cmds a =
         |> List.map (\cmdFunct -> cmdFunct a)
 
 
-{-| -}
+{-| Batches the commands returned by the given functions
+
+    fetchUsers : Model -> Cmd Msg
+    serializeData : Model -> Cmd Msg
+
+    model
+    |> batchMap [ fetchUsers, serializeData ]
+
+-}
 batchMap : List (a -> Cmd msg) -> a -> Cmd msg
-batchMap cmds a =
-    a
-        |> cmdMap cmds
-        |> Cmd.batch
+batchMap cmds =
+    cmdMap cmds >> Cmd.batch
 
 
-{-| -}
+{-|
+
+        fetchUsers : Model -> Cmd Msg
+
+        model
+        |> ifThenCmdMap (\model -> Maybe.isNothing model.users) fetchUsers
+
+-}
 ifThenCmdMap : (a -> Bool) -> (a -> Cmd msg) -> a -> Cmd msg
 ifThenCmdMap condition cmd a =
     ifThenCmd (condition a) (cmd a)
 
 
-{-| -}
+
+-- TODO link function
+
+
+{-| Like ifThenCmdMap, but with a list of cmds
+-}
 ifThenCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> a -> Cmd msg
 ifThenCmdsMap condition cmdList a =
     a
         |> batchMap cmdList
         |> ifThenCmd (condition a)
+
+
+
+-- TODO Why not ifThenElseMap?
 
 
 {-| -}
@@ -123,6 +155,7 @@ ifThenElseCmdMap condition cmd1 cmd2 a =
 ifThenElseCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> List (a -> Cmd msg) -> a -> Cmd msg
 ifThenElseCmdsMap condition cmds1 cmds2 a =
     -- this if is redundant but avoids to execute eventual Debug.log functions inside command list
+    -- TODO inline?
     if condition a then
         ifThenElseCmds (condition a) (cmdMap cmds1 a) []
 
@@ -130,7 +163,8 @@ ifThenElseCmdsMap condition cmds1 cmds2 a =
         ifThenElseCmds (condition a) [] (cmdMap cmds2 a)
 
 
-{-| -}
+{-| Like ifThenElse, but batches Cmds
+-}
 ifThenElseCmds : Bool -> List (Cmd msg) -> List (Cmd msg) -> Cmd msg
 ifThenElseCmds condition cmds1 cmds2 =
     if condition then
