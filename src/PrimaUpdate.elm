@@ -29,13 +29,25 @@ type alias PrimaUpdate model msg =
     ( model, Cmd msg )
 
 
-{-| -}
+{-| Wraps a command and a model in a PrimaUpdate pair
+
+    model
+    |> withCmd cmd
+    -- => (model, cmd)
+
+-}
 withCmd : Cmd msg -> model -> PrimaUpdate model msg
 withCmd cmd model =
     ( model, cmd )
 
 
-{-| -}
+{-| Like [withCmd](PrimaUpdate#withCmd) but batches them
+
+    model
+    |> withCmds [cmd1, cmd2]
+    -- => (model, Cmd.batch [cmd1, cmd2])
+
+-}
 withCmds : List (Cmd msg) -> model -> PrimaUpdate model msg
 withCmds cmds model =
     ( model, Cmd.batch cmds )
