@@ -20,6 +20,7 @@ module PrimaCmd exposing
 
 -}
 
+import PrimaFunction
 import Process
 import Task
 
@@ -138,17 +139,14 @@ ifThenCmdsMap condition cmdList a =
 
 
 
--- TODO Why not ifThenElseMap?
+-- TODO link in doc
 
 
-{-| -}
+{-| Same as PrimaFunction.ifThenElseMap but for Cmds
+-}
 ifThenElseCmdMap : (a -> Bool) -> (a -> Cmd msg) -> (a -> Cmd msg) -> a -> Cmd msg
-ifThenElseCmdMap condition cmd1 cmd2 a =
-    if condition a then
-        cmd1 a
-
-    else
-        cmd2 a
+ifThenElseCmdMap =
+    PrimaFunction.ifThenElseMap
 
 
 {-| -}
