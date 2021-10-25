@@ -126,6 +126,16 @@ ifThenCmdMap condition cmd a =
 
 
 {-| Like [`ifThenCmdMap`](PrimaCmd#ifThenCmdMap), but with a list of cmds
+
+        fetchUsers : Model -> Cmd Msg
+        serializeData : Model -> Cmd Msg
+
+        model
+        |> ifThenCmdsMap (\model -> Maybe.isNothing model.users)
+            [ fetchUsers
+            , serializeData
+            ]
+
 -}
 ifThenCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> a -> Cmd msg
 ifThenCmdsMap condition cmdList a =
@@ -135,6 +145,12 @@ ifThenCmdsMap condition cmdList a =
 
 
 {-| Same as [`PrimaFunction.ifThenElseMap`](PrimaFunction#ifThenElseMap) but for Cmds
+
+    model
+        |> ifThenElseMap modelHasError
+            Ports.logError
+            Ports.logSuccess
+
 -}
 ifThenElseCmdMap : (a -> Bool) -> (a -> Cmd msg) -> (a -> Cmd msg) -> a -> Cmd msg
 ifThenElseCmdMap =
@@ -142,6 +158,12 @@ ifThenElseCmdMap =
 
 
 {-| Like [`ifThenCmdMap`](PrimaCmd#ifThenCmdMap), but for List of commands
+
+        model
+        |> ifThenElseMap modelHasError
+            [ Ports.logError ]
+            [ Ports.logSuccess, Ports.serializeModel ]
+
 -}
 ifThenElseCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> List (a -> Cmd msg) -> a -> Cmd msg
 ifThenElseCmdsMap condition cmds1 cmds2 a =
@@ -154,6 +176,12 @@ ifThenElseCmdsMap condition cmds1 cmds2 a =
 
 
 {-| Like [`ifThenElse`](PrimaFunction#ifThenElse), but batches Cmds
+
+        model
+        |> ifThenElseMap modelHasError
+            [ Ports.logError model ]
+            [ Ports.logSuccess model, Ports.serializeModel model ]
+
 -}
 ifThenElseCmds : Bool -> List (Cmd msg) -> List (Cmd msg) -> Cmd msg
 ifThenElseCmds condition cmds1 cmds2 =
@@ -165,6 +193,10 @@ ifThenElseCmds condition cmds1 cmds2 =
 
 
 {-| Returns `Cmd.none` when argument is Nothing, maps it otherwise
+
+        fromMaybeMap Ports.log Nothing  -- => Cmd.none
+        fromMaybeMap Ports.log (Just "hello!") -- => Ports.log "hello!"
+
 -}
 fromMaybeMap : (a -> Cmd msg) -> Maybe a -> Cmd msg
 fromMaybeMap command maybe =

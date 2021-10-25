@@ -54,6 +54,18 @@ withCmds cmds model =
 
 
 {-| Used to apply an updated model to the cmds in fluid style updating
+
+        serializeUsers : Model -> Cmd Msg
+        logEvent : String -> Model -> Cmd Msg
+
+        update : Msg -> Model -> PrimaUpdate Model Msg
+        update msg model =
+            case msg of
+                FetchedUsers newUsers ->
+                    model
+                        |> setUsers newUsers
+                        |> withCmdsMap [ serializeUsers, logEvent "got users" ]
+
 -}
 withCmdsMap : List (model -> Cmd msg) -> model -> PrimaUpdate model msg
 withCmdsMap cmdFunctions model =
