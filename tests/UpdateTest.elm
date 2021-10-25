@@ -1,10 +1,10 @@
 module UpdateTest exposing (..)
 
-import Expect
+import Expect exposing (Expectation)
+import ExpectExtra
 import Fuzz
 import PrimaUpdate exposing (PrimaUpdate)
 import Test exposing (..)
-import TestHelpers
 
 
 suite : Test
@@ -12,18 +12,14 @@ suite =
     describe "PrimaFunction tests"
         [ describe "withoutCmds"
             [ (PrimaUpdate.withoutCmds >> getModel)
-                |> TestHelpers.shouldBehaveLike identity
+                |> ExpectExtra.shouldBehaveLike identity
                 |> fuzz Fuzz.int "wraps the model"
-            , test "does not perform side effects" <|
-                \() ->
-                    ()
-                        |> PrimaUpdate.withoutCmds
-                        |> getCmd
-                        |> Expect.equal Cmd.none
+            , test "does not perform side effects"
+                testDoesNotPerformSideEffect
             ]
         , describe "mapModel"
             [ PrimaUpdate.mapModel increment
-                |> TestHelpers.shouldBehaveLike (Tuple.mapFirst increment)
+                |> ExpectExtra.shouldBehaveLike (Tuple.mapFirst increment)
                 |> fuzz (fuzzUpdate Fuzz.int) "wraps the model"
             ]
         ]
@@ -49,3 +45,21 @@ getModel =
 getCmd : PrimaUpdate x msg -> Cmd msg
 getCmd =
     Tuple.second
+
+
+
+-- Assertions
+
+
+{-| A thunk returning a ({}, Cmd.none) pair
+-}
+updateWithoutCommand : () -> PrimaUpdate {} ()
+updateWithoutCommand () =
+    PrimaUpdate.withoutCmds {}
+
+
+testDoesNotPerformSideEffect : () -> Expectation
+testDoesNotPerformSideEffect =
+    updateWithoutCommand
+        >> getCmd
+        >> Expect.equal Cmd.none

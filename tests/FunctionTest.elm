@@ -1,10 +1,10 @@
 module FunctionTest exposing (..)
 
 import Expect
+import ExpectExtra
 import Fuzz
 import PrimaFunction
 import Test exposing (..)
-import TestHelpers
 
 
 suite : Test
@@ -13,26 +13,22 @@ suite =
         [ describe "(un)curry"
             [ List.member
                 |> (PrimaFunction.uncurry >> PrimaFunction.curry)
-                |> TestHelpers.shouldBehaveLike2 List.member
+                |> ExpectExtra.shouldBehaveLike2 List.member
                 |> fuzz2 Fuzz.int (Fuzz.list Fuzz.int) "(uncurry >> curry) List.member == List.member"
             ]
         , describe "flip"
             [ List.member
                 |> PrimaFunction.flip
-                |> TestHelpers.shouldBehaveLike2 (\x y -> List.member y x)
+                |> ExpectExtra.shouldBehaveLike2 (\x y -> List.member y x)
                 |> fuzz2 (Fuzz.list Fuzz.int) Fuzz.int "flip should flip its arguments arguments"
             ]
         , describe "ifThenElse"
             [ test "with truthy argument should return its first value" <|
-                \() ->
-                    PrimaFunction.ifThenElse True 0 1
-                        |> Expect.equal 0
+                testIfthenElseWhenTrue
             , test "with falsy argument should return its second value" <|
-                \() ->
-                    PrimaFunction.ifThenElse False 0 1
-                        |> Expect.equal 1
+                testIfthenElseWhenFalse
             , PrimaFunction.ifThenElse
-                |> TestHelpers.shouldBehaveLike3
+                |> ExpectExtra.shouldBehaveLike3
                     (\b x y ->
                         if b then
                             x
@@ -44,31 +40,56 @@ suite =
             ]
         , describe "ifThenMap"
             [ test "with truthy argument should apply the given function" <|
-                \() ->
-                    ""
-                        |> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
-                        |> Expect.equal "!"
+                emptyString
+                    >> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
+                    >> Expect.equal "!"
             , test "with falsy argument should not apply the given function" <|
-                \() ->
-                    "NOT_EMPTY"
-                        |> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
-                        |> Expect.equal "NOT_EMPTY"
+                notEmptyString
+                    >> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
+                    >> Expect.equal "NOT_EMPTY"
             ]
         , describe "ifThenElseMap"
             [ test "with truthy argument should apply the first function" <|
-                \() ->
-                    []
-                        |> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
-                        |> Expect.equal [ 100 ]
+                emptyList
+                    >> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
+                    >> Expect.equal [ 100 ]
             , test "with falsy argument should apply the second function" <|
-                \() ->
-                    [ 0, 10, 20 ]
-                        |> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
-                        |> Expect.equal [ 0 ]
+                notEmptyList
+                    >> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
+                    >> Expect.equal [ 0 ]
             , test "type regression test" <|
-                \() ->
-                    42
-                        |> PrimaFunction.ifThenElseMap (always True) String.fromInt String.fromInt
-                        |> Expect.equal "42"
+                num42
+                    >> PrimaFunction.ifThenElseMap (always True) String.fromInt String.fromInt
+                    >> Expect.equal "42"
             ]
         ]
+
+
+num42 () =
+    42
+
+
+notEmptyList () =
+    [ 0, 10, 20 ]
+
+
+emptyList () =
+    []
+
+
+emptyString () =
+    ""
+
+
+notEmptyString () =
+    "NOT_EMPTY"
+
+
+testIfthenElseWhenTrue () =
+    PrimaFunction.ifThenElse True 0 1
+        |> Expect.equal 0
+
+
+testIfthenElseWhenFalse () =
+    PrimaFunction.ifThenElse False 0 1
+        |> Expect.equal 1
