@@ -149,16 +149,16 @@ ifThenElseCmdMap =
     PrimaFunction.ifThenElseMap
 
 
-{-| -}
+{-| Like ifThenCmdMap, but for List of commands
+-}
 ifThenElseCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> List (a -> Cmd msg) -> a -> Cmd msg
 ifThenElseCmdsMap condition cmds1 cmds2 a =
-    -- this if is redundant but avoids to execute eventual Debug.log functions inside command list
-    -- TODO inline?
-    if condition a then
-        ifThenElseCmds (condition a) (cmdMap cmds1 a) []
+    Cmd.batch <|
+        if condition a then
+            cmdMap cmds1 a
 
-    else
-        ifThenElseCmds (condition a) [] (cmdMap cmds2 a)
+        else
+            cmdMap cmds2 a
 
 
 {-| Like ifThenElse, but batches Cmds
