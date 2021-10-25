@@ -39,10 +39,8 @@ suite =
                 |> fuzz3 Fuzz.bool Fuzz.int Fuzz.int "should behave like an if expression"
             ]
         , describe "ifThenMap"
-            [ test "with truthy argument should apply the given function" <|
-                emptyString
-                    >> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
-                    >> Expect.equal "!"
+            [ test "with truthy argument should apply the given function"
+                withTruthyArgsShouldApplyTheFunction
             , test "with falsy argument should not apply the given function" <|
                 notEmptyString
                     >> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
@@ -63,6 +61,12 @@ suite =
                     >> Expect.equal "42"
             ]
         ]
+
+
+withTruthyArgsShouldApplyTheFunction =
+    emptyString
+        >> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
+        >> Expect.equal "!"
 
 
 num42 () =
