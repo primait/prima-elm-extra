@@ -1,4 +1,4 @@
-module TestHelpers exposing
+module ExpectExtra exposing
     ( shouldBehaveLike
     , shouldBehaveLike2
     , shouldBehaveLike3
