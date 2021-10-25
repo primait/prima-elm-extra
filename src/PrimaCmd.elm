@@ -125,11 +125,7 @@ ifThenCmdMap condition cmd a =
     ifThenCmd (condition a) (cmd a)
 
 
-
--- TODO link function
-
-
-{-| Like ifThenCmdMap, but with a list of cmds
+{-| Like [`ifThenCmdMap`](PrimaCmd#ifThenCmdMap), but with a list of cmds
 -}
 ifThenCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> a -> Cmd msg
 ifThenCmdsMap condition cmdList a =
@@ -138,18 +134,14 @@ ifThenCmdsMap condition cmdList a =
         |> ifThenCmd (condition a)
 
 
-
--- TODO link in doc
-
-
-{-| Same as PrimaFunction.ifThenElseMap but for Cmds
+{-| Same as [`PrimaFunction.ifThenElseMap`](PrimaFunction#ifThenElseMap) but for Cmds
 -}
 ifThenElseCmdMap : (a -> Bool) -> (a -> Cmd msg) -> (a -> Cmd msg) -> a -> Cmd msg
 ifThenElseCmdMap =
     PrimaFunction.ifThenElseMap
 
 
-{-| Like ifThenCmdMap, but for List of commands
+{-| Like [`ifThenCmdMap`](PrimaCmd#ifThenCmdMap), but for List of commands
 -}
 ifThenElseCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> List (a -> Cmd msg) -> a -> Cmd msg
 ifThenElseCmdsMap condition cmds1 cmds2 a =
@@ -161,7 +153,7 @@ ifThenElseCmdsMap condition cmds1 cmds2 a =
             cmdMap cmds2 a
 
 
-{-| Like ifThenElse, but batches Cmds
+{-| Like [`ifThenElse`](PrimaFunction#ifThenElse), but batches Cmds
 -}
 ifThenElseCmds : Bool -> List (Cmd msg) -> List (Cmd msg) -> Cmd msg
 ifThenElseCmds condition cmds1 cmds2 =
@@ -172,7 +164,7 @@ ifThenElseCmds condition cmds1 cmds2 =
         Cmd.batch cmds2
 
 
-{-| Returns Cmd.none when argument is Nothing, maps it otherwise
+{-| Returns `Cmd.none` when argument is Nothing, maps it otherwise
 -}
 fromMaybeMap : (a -> Cmd msg) -> Maybe a -> Cmd msg
 fromMaybeMap command maybe =
