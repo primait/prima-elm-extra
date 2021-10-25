@@ -117,7 +117,8 @@ batchMap cmds =
         fetchUsers : Model -> Cmd Msg
 
         model
-        |> ifThenCmdMap (\model -> Maybe.isNothing model.users) fetchUsers
+        |> ifThenCmdMap Model.usersAreNotPresent
+            fetchUsers
 
 -}
 ifThenCmdMap : (a -> Bool) -> (a -> Cmd msg) -> a -> Cmd msg
@@ -131,7 +132,7 @@ ifThenCmdMap condition cmd a =
         serializeData : Model -> Cmd Msg
 
         model
-        |> ifThenCmdsMap (\model -> Maybe.isNothing model.users)
+        |> ifThenCmdsMap Model.usersAreNotPresent
             [ fetchUsers
             , serializeData
             ]
@@ -148,8 +149,8 @@ ifThenCmdsMap condition cmdList a =
 
     model
         |> ifThenElseMap modelHasError
-            Ports.logError
-            Ports.logSuccess
+            (Model.toError >> Ports.logError)
+            (always () >> Ports.logSuccess)
 
 -}
 ifThenElseCmdMap : (a -> Bool) -> (a -> Cmd msg) -> (a -> Cmd msg) -> a -> Cmd msg
@@ -161,8 +162,10 @@ ifThenElseCmdMap =
 
         model
         |> ifThenElseMap modelHasError
-            [ Ports.logError ]
-            [ Ports.logSuccess, Ports.serializeModel ]
+            [  Model.toError >> Ports.logError ]
+            [ always () >> Ports.logSuccess
+            , Ports.serializeModel
+            ]
 
 -}
 ifThenElseCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> List (a -> Cmd msg) -> a -> Cmd msg
@@ -177,10 +180,9 @@ ifThenElseCmdsMap condition cmds1 cmds2 a =
 
 {-| Like [`ifThenElse`](PrimaFunction#ifThenElse), but batches Cmds
 
-        model
-        |> ifThenElseMap modelHasError
-            [ Ports.logError model ]
-            [ Ports.logSuccess model, Ports.serializeModel model ]
+        ifThenElseMap model.hasError
+            [ Ports.logError () ]
+            [ Ports.logSuccess () ]
 
 -}
 ifThenElseCmds : Bool -> List (Cmd msg) -> List (Cmd msg) -> Cmd msg
