@@ -23,9 +23,9 @@ suite =
                 |> fuzz2 (Fuzz.list Fuzz.int) Fuzz.int "flip should flip its arguments arguments"
             ]
         , describe "ifThenElse"
-            [ test "with truthy argument should return its first value" <|
+            [ test "with truthy argument should return its first value"
                 testIfthenElseWhenTrue
-            , test "with falsy argument should return its second value" <|
+            , test "with falsy argument should return its second value"
                 testIfthenElseWhenFalse
             , PrimaFunction.ifThenElse
                 |> ExpectExtra.shouldBehaveLike3
@@ -41,7 +41,7 @@ suite =
         , describe "ifThenMap"
             [ test "with truthy argument should apply the given function"
                 withTruthyArgsShouldApplyTheFunction
-            , test "with falsy argument should not apply the given function" <|
+            , test "with falsy argument should not apply the given function"
                 withFalsyArgumentShouldNotApplyTheGivenFunction
             ]
         , describe "ifThenElseMap"
