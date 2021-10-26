@@ -42,45 +42,70 @@ suite =
             [ test "with truthy argument should apply the given function"
                 withTruthyArgsShouldApplyTheFunction
             , test "with falsy argument should not apply the given function" <|
-                notEmptyString
-                    >> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
-                    >> Expect.equal "NOT_EMPTY"
+                withFalsyArgumentShouldNotApplyTheGivenFunction
             ]
         , describe "ifThenElseMap"
-            [ test "with truthy argument should apply the first function" <|
-                emptyList
-                    >> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
-                    >> Expect.equal [ 100 ]
-            , test "with falsy argument should apply the second function" <|
-                notEmptyList
-                    >> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
-                    >> Expect.equal [ 0 ]
-            , test "type regression test" <|
-                num42
-                    >> PrimaFunction.ifThenElseMap (always True) String.fromInt String.fromInt
-                    >> Expect.equal "42"
+            [ test "with truthy argument should apply the first function"
+                withTruthyArgumentShouldApplyTheFirstFunction
+            , test "with falsy argument should apply the second function"
+                withFalsyArgumentIfThenElseMapShouldApplyTheFirstFunction
+            , test "type regression test"
+                ifThenElseMapTypeRegression
             ]
         ]
 
 
+ifThenElseMapTypeRegression : () -> Expect.Expectation
+ifThenElseMapTypeRegression =
+    num42
+        >> PrimaFunction.ifThenElseMap (always True) String.fromInt String.fromInt
+        >> Expect.equal "42"
+
+
+withFalsyArgumentIfThenElseMapShouldApplyTheFirstFunction : () -> Expect.Expectation
+withFalsyArgumentIfThenElseMapShouldApplyTheFirstFunction =
+    notEmptyList
+        >> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
+        >> Expect.equal [ 0 ]
+
+
+withTruthyArgumentShouldApplyTheFirstFunction : () -> Expect.Expectation
+withTruthyArgumentShouldApplyTheFirstFunction =
+    emptyList
+        >> PrimaFunction.ifThenElseMap List.isEmpty ((::) 100) (List.take 1)
+        >> Expect.equal [ 100 ]
+
+
+withFalsyArgumentShouldNotApplyTheGivenFunction : () -> Expect.Expectation
+withFalsyArgumentShouldNotApplyTheGivenFunction =
+    notEmptyString
+        >> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
+        >> Expect.equal "NOT_EMPTY"
+
+
+withTruthyArgsShouldApplyTheFunction : () -> Expect.Expectation
 withTruthyArgsShouldApplyTheFunction =
     emptyString
         >> PrimaFunction.ifThenMap String.isEmpty ((++) "!")
         >> Expect.equal "!"
 
 
+num42 : () -> Int
 num42 () =
     42
 
 
+notEmptyList : () -> List Int
 notEmptyList () =
     [ 0, 10, 20 ]
 
 
+emptyList : () -> List a
 emptyList () =
     []
 
 
+emptyString : () -> String
 emptyString () =
     ""
 
