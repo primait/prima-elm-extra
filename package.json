@@ -2,15 +2,14 @@
   "name": "prima-elm-extra",
   "repository": "git@github.com:primait/prima-elm-extra.git",
   "scripts": {
-    "build:diff": "./node_modules/.bin/elm diff",
-    "build:create": "./node_modules/.bin/elm bump",
-    "build:publish": "./node_modules/.bin/elm publish",
     "analyse": "./node_modules/.bin/elm-analyse  src/*",
     "review": "./node_modules/.bin/elm-review --compiler node_modules/.bin/elm",
     "test": "./node_modules/.bin/elm-test"
   },
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "elm-analyse": "^0.16.5",
+    "elm-review": "^2.6.1",
     "elm-test": "^0.19.1-revision7"
   }
 }
