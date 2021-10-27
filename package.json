@@ -10,5 +10,8 @@
     "elm-analyse": "^0.16.5",
     "elm-review": "^2.6.1",
     "elm-test": "^0.19.1-revision7"
+  },
+  "dependencies": {
+    "elm": "^0.19.1-5"
   }
 }
