@@ -1,0 +1,189 @@
+---
+kind: pipeline
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: git-clone
+  image: public.ecr.aws/prima/drone-git:1.3-3
+  environment:
+    PLUGIN_DEPTH: 5
+
+- name: cache-restore
+  image: public.ecr.aws/prima/drone-tools:1.21.0
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - cache-restore
+  environment:
+    BUCKET_NAME: prima-ci-cache
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  - name: docker
+    path: /var/run/docker.sock
+  - name: docker-conf
+    path: /root/.docker
+  depends_on:
+  - git-clone
+
+- name: check-secrets
+  image: public.ecr.aws/prima/drone-tools:1.21.0
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - check-secrets-grants
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  depends_on:
+  - git-clone
+
+- name: check-public-docker-images
+  image: public.ecr.aws/prima/drone-tools:1.21.0
+  commands:
+  - check-public-docker-images
+  depends_on:
+  - git-clone
+
+- name: build-image
+  image: public.ecr.aws/prima/drone-tools:1.21.0
+  commands:
+  - sed -i 's/USER node/USER root/g' ./Dockerfile
+  - docker build -t prima/prima-elm-extra-ci:${DRONE_COMMIT} ./
+  volumes:
+  - name: docker
+    path: /var/run/docker.sock
+  - name: docker-conf
+    path: /root/.docker
+  depends_on:
+  - cache-restore
+
+- name: dependencies
+  image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
+  commands:
+  - yarn
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - build-image
+
+- name: test
+  image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
+  commands:
+  - yarn test
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - build-image
+
+- name: analyse
+  image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
+  commands:
+  - yarn analyse
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - test
+
+- name: lint
+  image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
+  commands:
+  - yarn lint
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - analyse
+
+- name: build
+  image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
+  commands:
+  - yarn build
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - lint
+
+- name: cache-save
+  image: public.ecr.aws/prima/drone-tools:1.21.0
+  commands:
+  - . /etc/profile.d/ecs-credentials-endpoint
+  - cache-save .cache node_modules
+  environment:
+    BUCKET_NAME: prima-ci-cache
+  volumes:
+  - name: ecs
+    path: /etc/profile.d/ecs-credentials-endpoint
+  - name: docker
+    path: /var/run/docker.sock
+  - name: docker-conf
+    path: /root/.docker
+  when:
+    branch:
+    - master
+  depends_on:
+  - dependencies
+  - test
+  - analyse
+  - lint
+  - build
+
+volumes:
+- name: docker
+  host:
+    path: /var/run/docker.sock
+- name: ecs
+  host:
+    path: /etc/profile.d/ecs-credentials-endpoint
+- name: docker-conf
+  host:
+    path: /home/ec2-user/.docker
+
+trigger:
+  event:
+  - push
+
+---
+kind: pipeline
+name: email-failure
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: email-failure
+  image: public.ecr.aws/prima/drone-email
+  settings:
+    from: drone@prima.it
+    host: email-smtp.eu-west-1.amazonaws.com
+  environment:
+    PLUGIN_PASSWORD:
+      from_secret: email_password
+    PLUGIN_USERNAME:
+      from_secret: email_username
+
+trigger:
+  status:
+  - failure
+  target:
+    exclude:
+    - qa-stack
+    - qa-it
+    - qa
+
+depends_on:
+- default
+
+---
+kind: signature
+hmac: 5384a23eabe533de2e1d32b77207d41323d7bdaac0734d6f288284c6f3836442
+
+...
