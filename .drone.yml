@@ -79,7 +79,7 @@ steps:
   environment:
     YARN_CACHE_FOLDER: /drone/src/.cache/yarn
   depends_on:
-  - build-image
+  - dependencies
 
 - name: analyse
   image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
