@@ -313,7 +313,7 @@ ee-first@1.1.1:
 
 elm-analyse@^0.16.5:
   version "0.16.5"
-  resolved "https://registry.yarnpkg.com/elm-analyse/-/elm-analyse-0.16.5.tgz#eb3278317bf90a3092994b53b80b64365157cfa3"
+  resolved "https://registry.npmjs.org/elm-analyse/-/elm-analyse-0.16.5.tgz#eb3278317bf90a3092994b53b80b64365157cfa3"
   integrity sha512-I7dgGFOc+mYDcDuyo1/HcIn3E5MiMbocStNzivsPSjCUviuEieHdDKZmJJ9uM3IdCu0fdBmRNWQBSOXtXrgzKg==
   dependencies:
     body-parser "1.19.0"
@@ -332,7 +332,7 @@ elm-analyse@^0.16.5:
 
 elm-test@^0.19.1-revision7:
   version "0.19.1-revision7"
-  resolved "https://registry.yarnpkg.com/elm-test/-/elm-test-0.19.1-revision7.tgz#1a0864b001f2cc55ba6479bd3afedfbd271ab549"
+  resolved "https://registry.npmjs.org/elm-test/-/elm-test-0.19.1-revision7.tgz#1a0864b001f2cc55ba6479bd3afedfbd271ab549"
   integrity sha512-sd3nCQMeYMaY84Sz41bVJ30ZvQN1/4ZcD8uYMOuUbM39FDh58NY9/AcImVJ7Z+gjCFdcSU6VscZzhUoPW8jp6Q==
   dependencies:
     chalk "^4.1.0"
