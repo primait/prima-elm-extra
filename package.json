@@ -4,10 +4,12 @@
   "scripts": {
     "analyse": "./node_modules/.bin/elm-analyse  src/*",
     "review": "./node_modules/.bin/elm-review --compiler node_modules/.bin/elm",
-    "test": "./node_modules/.bin/elm-test"
+    "test": "./node_modules/.bin/elm-test",
+    "lint": "./node_modules/.bin/elm-format ./src ./review ./tests --validate"
   },
   "devDependencies": {
     "elm-analyse": "^0.16.5",
+    "elm-format": "^0.8.5",
     "elm-json": "^0.2.10",
     "elm-review": "^2.6.1",
     "elm-test": "^0.19.1-revision7"

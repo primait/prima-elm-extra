@@ -15,8 +15,6 @@ module PrimaUpdate exposing
 -}
 
 
-
-
 {-| The alias for a `(Model, Cmd Msg)` pair.
 
     init : Update Model Msg
