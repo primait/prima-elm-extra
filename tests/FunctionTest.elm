@@ -1,4 +1,4 @@
-module FunctionTest exposing (..)
+module FunctionTest exposing (suite)
 
 import Expect
 import ExpectExtra
@@ -110,15 +110,18 @@ emptyString () =
     ""
 
 
+notEmptyString : () -> String
 notEmptyString () =
     "NOT_EMPTY"
 
 
+testIfthenElseWhenTrue : () -> Expect.Expectation
 testIfthenElseWhenTrue () =
     PrimaFunction.ifThenElse True 0 1
         |> Expect.equal 0
 
 
+testIfthenElseWhenFalse : () -> Expect.Expectation
 testIfthenElseWhenFalse () =
     PrimaFunction.ifThenElse False 0 1
         |> Expect.equal 1

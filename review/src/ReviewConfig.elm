@@ -5,16 +5,15 @@ import NoImportingEverything
 import NoMissingTypeAnnotation
 import NoUnused.CustomTypeConstructors
 import NoUnused.Dependencies
-import NoUnused.Exports
 import NoUnused.Modules
 import NoUnused.Variables
-import Review.Rule exposing (Rule, ignoreErrorsForDirectories, ignoreErrorsForFiles)
+import Review.Rule exposing (Rule)
 
 
 config : List Rule
 config =
     [ NoExposingEverything.rule
-    , NoImportingEverything.rule
+    , NoImportingEverything.rule [ "Test" ]
     , NoMissingTypeAnnotation.rule
     , NoUnused.CustomTypeConstructors.rule []
     , NoUnused.Dependencies.rule

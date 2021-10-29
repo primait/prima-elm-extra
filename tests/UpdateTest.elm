@@ -1,4 +1,4 @@
-module UpdateTest exposing (..)
+module UpdateTest exposing (suite)
 
 import Expect exposing (Expectation)
 import ExpectExtra
