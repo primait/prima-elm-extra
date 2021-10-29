@@ -5,7 +5,8 @@
     "analyse": "./node_modules/.bin/elm-analyse  src/*",
     "review": "./node_modules/.bin/elm-review --compiler node_modules/.bin/elm",
     "test": "./node_modules/.bin/elm-test",
-    "lint": "./node_modules/.bin/elm-format ./src ./review ./tests --validate"
+    "lint": "./node_modules/.bin/elm-format ./src ./review ./tests --validate",
+    "build": "exit 0"
   },
   "devDependencies": {
     "elm-analyse": "^0.16.5",
