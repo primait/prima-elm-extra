@@ -81,6 +81,15 @@ steps:
   depends_on:
   - dependencies
 
+- name: review
+  image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
+  commands:
+  - yarn review
+  environment:
+    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
+  depends_on:
+  - test
+
 - name: analyse
   image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
   commands:
@@ -88,7 +97,7 @@ steps:
   environment:
     YARN_CACHE_FOLDER: /drone/src/.cache/yarn
   depends_on:
-  - test
+  - review
 
 - name: lint
   image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
@@ -98,15 +107,6 @@ steps:
     YARN_CACHE_FOLDER: /drone/src/.cache/yarn
   depends_on:
   - analyse
-
-- name: build
-  image: prima/prima-elm-extra-ci:${DRONE_COMMIT}
-  commands:
-  - yarn build
-  environment:
-    YARN_CACHE_FOLDER: /drone/src/.cache/yarn
-  depends_on:
-  - lint
 
 - name: cache-save
   image: public.ecr.aws/prima/drone-tools:1.21.0
@@ -128,9 +128,9 @@ steps:
   depends_on:
   - dependencies
   - test
+  - review
   - analyse
   - lint
-  - build
 
 volumes:
 - name: docker
@@ -184,6 +184,6 @@ depends_on:
 
 ---
 kind: signature
-hmac: 5384a23eabe533de2e1d32b77207d41323d7bdaac0734d6f288284c6f3836442
+hmac: e20f08efbe4b3dfdb4772c75694debb577700033636bf41b99b88f2302ccc14c
 
 ...
