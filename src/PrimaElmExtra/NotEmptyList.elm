@@ -1,4 +1,4 @@
-module PrimaLib.NotEmptyList exposing
+module PrimaElmExtra.NotEmptyList exposing
     ( NotEmptyList
     , all
     , any
