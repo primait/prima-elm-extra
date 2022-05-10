@@ -393,7 +393,7 @@ intersperse sep nEL =
             NotEmptyList { head = head nEL, tail = [ sep ] }
 
         x :: [] ->
-            NotEmptyList { head = head nEL, tail = sep :: [ x ] }
+            NotEmptyList { head = head nEL, tail = [ sep, x ] }
 
         x :: xs ->
             NotEmptyList { head = head nEL, tail = sep :: List.intersperse sep (x :: xs) }
