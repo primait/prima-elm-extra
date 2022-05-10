@@ -1,5 +1,6 @@
 module PrimaElmExtra.NotEmptyList exposing
     ( NotEmptyList
+    , NotEmptyPartition(..)
     , all
     , any
     , append
@@ -29,6 +30,7 @@ module PrimaElmExtra.NotEmptyList exposing
     , member
     , minimum
     , notEmptyList
+    , partition
     , product
     , reverse
     , singleton
@@ -496,3 +498,51 @@ unzip pairs =
 toList : NotEmptyList a -> List a
 toList (NotEmptyList conf) =
     conf.head :: conf.tail
+
+
+{-| Partition a not empty list based on some test. The first list contains all values
+that satisfy the test, and the second list contains all the value that do not.
+
+    partition (\x -> x < 3) [ 0, 1, 2, 3, 4, 5 ] == ( [ 0, 1, 2 ], [ 3, 4, 5 ] )
+
+    partition isEven [ 0, 1, 2, 3, 4, 5 ] == ( [ 0, 2, 4 ], [ 1, 3, 5 ] )
+
+-}
+type NotEmptyPartition a
+    = NotEmptyTruesPartition ( NotEmptyList a, () )
+    | NotEmptyFalsesPartition ( (), NotEmptyList a )
+    | BothNotEmptyPartition ( NotEmptyList a, NotEmptyList a )
+
+
+partition : (a -> Bool) -> NotEmptyList a -> NotEmptyPartition a
+partition pred (NotEmptyList conf) =
+    if pred conf.head then
+        List.foldr (partitionStep pred) (NotEmptyTruesPartition ( singleton conf.head, () )) conf.tail
+
+    else
+        List.foldr (partitionStep pred) (NotEmptyFalsesPartition ( (), singleton conf.head )) conf.tail
+
+
+partitionStep : (a -> Bool) -> a -> NotEmptyPartition a -> NotEmptyPartition a
+partitionStep pred x notEmptyPartition =
+    case notEmptyPartition of
+        NotEmptyTruesPartition ( trues, falses ) ->
+            if pred x then
+                NotEmptyTruesPartition ( cons x trues, falses )
+
+            else
+                BothNotEmptyPartition ( trues, singleton x )
+
+        NotEmptyFalsesPartition ( trues, falses ) ->
+            if pred x then
+                BothNotEmptyPartition ( singleton x, falses )
+
+            else
+                NotEmptyFalsesPartition ( trues, cons x falses )
+
+        BothNotEmptyPartition ( trues, falses ) ->
+            if pred x then
+                BothNotEmptyPartition ( cons x trues, falses )
+
+            else
+                BothNotEmptyPartition ( trues, cons x falses )
