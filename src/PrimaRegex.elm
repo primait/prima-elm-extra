@@ -1,11 +1,11 @@
 module PrimaRegex exposing
     ( email
     , hasALowerCaseChar
-    , hasANumericCharRegex
     , hasASpecialChar
     , hasAUpperCaseChar
     , hasAtLeastSixChar
     , hasNonAlphanumeric
+    , hasNonDigitChar
     , mobileNumber
     , numbersOnly
     , plateNumber
@@ -48,9 +48,16 @@ hasNonAlphanumeric =
         |> Maybe.withDefault Regex.never
 
 
-hasANumericCharRegex : Regex.Regex
-hasANumericCharRegex =
+hasANumericChar : Regex.Regex
+hasANumericChar =
     "[0-9]"
+        |> Regex.fromString
+        |> Maybe.withDefault Regex.never
+
+
+hasNonDigitChar : Regex.Regex
+hasNonDigitChar =
+    "\\D"
         |> Regex.fromString
         |> Maybe.withDefault Regex.never
 
