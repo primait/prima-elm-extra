@@ -1,6 +1,7 @@
 module PrimaRegex exposing
     ( email
     , hasALowerCaseChar
+    , hasANumericChar
     , hasASpecialChar
     , hasAUpperCaseChar
     , hasAtLeastSixChar
