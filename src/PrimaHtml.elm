@@ -76,6 +76,6 @@ maybeMap2Render renderer maybeA maybeB =
             text ""
 
 
-renderOrNothing : Maybe (Html a) -> Html a
+renderOrNothing : Maybe (Html msg) -> Html msg
 renderOrNothing maybeHtml =
     Maybe.withDefault (text "") maybeHtml
