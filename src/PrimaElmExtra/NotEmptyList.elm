@@ -95,11 +95,13 @@ type NotEmptyList a
 
 
 {-| Creates a NotEmptyList from head element and tail
-notEmptyList 1 [ 2, 3 ] =
-NotEmptyList
-{ head = 1
-, tail = [ 2, 3 ]
-}
+
+    notEmptyList 1 [ 2, 3 ] =
+        NotEmptyList
+            { head = 1
+            , tail = [ 2, 3 ]
+            }
+
 -}
 notEmptyList : a -> List a -> NotEmptyList a
 notEmptyList first rest =
@@ -124,10 +126,12 @@ fromList list =
 
 
 {-| Create a NotEmptyList with only one element:
-singleton 1234 =
-{ head = 1234, tail = [] }
-singleton "hi" =
-{ head = "hi", tail = [] }
+
+    singleton 1234 =
+        { head = 1234, tail = [] }
+    singleton "hi" =
+        { head = "hi", tail = [] }
+
 -}
 singleton : a -> NotEmptyList a
 singleton value =
@@ -509,40 +513,44 @@ that satisfy the test, and the second list contains all the value that do not.
 
 -}
 type NotEmptyPartition a
-    = NotEmptyTruesPartition ( NotEmptyList a, () )
-    | NotEmptyFalsesPartition ( (), NotEmptyList a )
-    | BothNotEmptyPartition ( NotEmptyList a, NotEmptyList a )
+    = AllTruesPartition (NotEmptyList a)
+    | AllFalsesPartition (NotEmptyList a)
+    | BothPartition ( NotEmptyList a, NotEmptyList a )
 
 
 partition : (a -> Bool) -> NotEmptyList a -> NotEmptyPartition a
-partition pred (NotEmptyList conf) =
-    if pred conf.head then
-        List.foldr (partitionStep pred) (NotEmptyTruesPartition ( singleton conf.head, () )) conf.tail
+partition pred nEL =
+    let
+        (NotEmptyList reversed) =
+            reverse nEL
+    in
+    if pred reversed.head then
+        List.foldl (partitionStep pred) (AllTruesPartition (singleton reversed.head)) reversed.tail
 
     else
-        List.foldr (partitionStep pred) (NotEmptyFalsesPartition ( (), singleton conf.head )) conf.tail
+        List.foldl (partitionStep pred) (AllFalsesPartition (singleton reversed.head)) reversed.tail
 
 
 partitionStep : (a -> Bool) -> a -> NotEmptyPartition a -> NotEmptyPartition a
 partitionStep pred x notEmptyPartition =
     case notEmptyPartition of
-        NotEmptyTruesPartition ( trues, falses ) ->
+        AllTruesPartition trues ->
             if pred x then
-                NotEmptyTruesPartition ( cons x trues, falses )
+                AllTruesPartition (cons x trues)
 
             else
-                BothNotEmptyPartition ( trues, singleton x )
+                BothPartition ( trues, singleton x )
 
-        NotEmptyFalsesPartition ( trues, falses ) ->
+        AllFalsesPartition falses ->
             if pred x then
-                BothNotEmptyPartition ( singleton x, falses )
+                BothPartition ( singleton x, falses )
 
             else
-                NotEmptyFalsesPartition ( trues, cons x falses )
+                AllFalsesPartition (cons x falses)
 
-        BothNotEmptyPartition ( trues, falses ) ->
+        BothPartition ( trues, falses ) ->
             if pred x then
-                BothNotEmptyPartition ( cons x trues, falses )
+                BothPartition ( cons x trues, falses )
 
             else
-                BothNotEmptyPartition ( trues, cons x falses )
+                BothPartition ( trues, cons x falses )
