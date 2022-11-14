@@ -1,4 +1,4 @@
-module Regex exposing
+module PrimaElmExtra.Regex exposing
     ( email
     , hasALowerCaseChar
     , hasANumericChar
