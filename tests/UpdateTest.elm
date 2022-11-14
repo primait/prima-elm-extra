@@ -29,7 +29,7 @@ suite =
 -}
 fuzzUpdate : Fuzz.Fuzzer model -> Fuzz.Fuzzer (PrimaUpdate model (Cmd msg))
 fuzzUpdate fuzzModel =
-    Fuzz.tuple ( fuzzModel, Fuzz.constant Cmd.none )
+    Fuzz.pair fuzzModel (Fuzz.constant Cmd.none)
 
 
 increment : Int -> Int
