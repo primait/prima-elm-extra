@@ -1,4 +1,4 @@
-module PrimaElmExtra.Render exposing
+module PrimaElmExtra.Html.Render exposing
     ( htmlIf, listIf, listUnless, htmlUnless
     , listOrNothing, maybe, maybeMap2, orNothing
     , maybeMap

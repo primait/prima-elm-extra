@@ -6,11 +6,11 @@
     "version": "1.0.0",
     "exposed-modules": [
         "PrimaElmExtra.Html.Attributes",
+        "PrimaElmExtra.Html.Render",
         "PrimaElmExtra.NotEmptyList",
+        "PrimaElmExtra.Regex",
         "PrimaCmd",
         "PrimaFunction",
-        "PrimaHtml",
-        "PrimaRegex",
         "PrimaUpdate"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
