@@ -1,4 +1,4 @@
-module PrimaRegex exposing
+module Regex exposing
     ( email
     , hasALowerCaseChar
     , hasANumericChar
