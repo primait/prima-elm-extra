@@ -17,7 +17,7 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 50
 
-  - package-ecosystem: "elm-review" # Elm-review elm dependencies
+  - package-ecosystem: "elm" # Elm-review elm dependencies
     directory: "/review" # Location of package manifests
     schedule:
       interval: "monthly"
