@@ -24,7 +24,7 @@ plateNumber =
 
 email : Regex
 email =
-    "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
+    "^[a-zA-Z0-9_.+-]+(?:\\.[a-zA-Z0-9_.+-]+)*@(?:[a-zA-Z0-9-]+\\.)+[A-Za-z]{2,6}$"
         |> Regex.fromString
         |> Maybe.withDefault Regex.never
 
