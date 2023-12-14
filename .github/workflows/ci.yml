@@ -11,7 +11,7 @@ env:
 jobs:
   ci:
     name: Run checks and tests
-    runs-on: k8s-medium
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
