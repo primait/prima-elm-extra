@@ -21,8 +21,9 @@ jobs:
         with:
           ssh-key: ${{ github.ssh-key }}
 
-      - uses: primait/shared-github-actions/actions/install-node@install-node-v1
+      - uses: actions/setup-node@v4
         with:
+          cache: 'yarn'
           node-version: '20.10.0'
 
       - name: Install deps
