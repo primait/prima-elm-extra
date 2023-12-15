@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+env:
+  CI: true
+
+jobs:
+  ci:
+    name: Run checks and tests
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ github.ssh-key }}
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: 'yarn'
+          node-version: '20.10.0'
+
+      - name: Install deps
+        run: yarn install
+
+      - name: Review
+        run: yarn review
+      
+      - name: Analyse
+        run: yarn analyse
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Tests
+        run: yarn test

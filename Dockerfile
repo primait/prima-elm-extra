@@ -1,4 +1,4 @@
-FROM public.ecr.aws/prima/node:14.18.1-1
+FROM node:lts
 
 WORKDIR /code
 
