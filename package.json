@@ -9,7 +9,7 @@
     "build": "exit 0"
   },
   "devDependencies": {
-    "elm": "^0.19.1-5",
+    "elm": "^0.19.1-6",
     "elm-analyse": "^0.16.5",
     "elm-format": "^0.8.5",
     "elm-json": "^0.2.13",
