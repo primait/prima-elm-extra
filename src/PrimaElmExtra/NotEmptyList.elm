@@ -18,6 +18,7 @@ module PrimaElmExtra.NotEmptyList exposing
     , fromList
     , fromListSelectionSet
     , head
+    , indexedMap
     , intersperse
     , length
     , listMap
@@ -184,6 +185,22 @@ map mapper (NotEmptyList conf) =
 listMap : (List a -> List b) -> NotEmptyList a -> Maybe (NotEmptyList b)
 listMap mapper =
     toList >> mapper >> fromList
+
+
+{-| Same as `map` but the function is also applied to the index of each
+element (starting at zero).
+
+    indexedMap Tuple.pair [ "Tom", "Sue", "Bob" ] == [ ( 0, "Tom" ), ( 1, "Sue" ), ( 2, "Bob" ) ]
+
+-}
+indexedMap : (Int -> a -> b) -> NotEmptyList a -> NotEmptyList b
+indexedMap f xs =
+    map2 f (indexList xs) xs
+
+
+indexList : NotEmptyList a -> NotEmptyList Int
+indexList =
+    foldr (\_ prev -> cons (head prev + 1) prev) (singleton 0)
 
 
 {-| Reduce a NotEmptyList from the left.
