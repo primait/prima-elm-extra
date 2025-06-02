@@ -13,7 +13,7 @@
     "elm-analyse": "^0.16.5",
     "elm-format": "^0.8.5",
     "elm-json": "^0.2.13",
-    "elm-review": "^2.8.2",
+    "elm-review": "^2.13.2",
     "elm-test": "^0.19.1-revision10"
   },
   "dependencies": {}
