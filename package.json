@@ -2,7 +2,7 @@
   "name": "prima-elm-extra",
   "repository": "git@github.com:primait/prima-elm-extra.git",
   "scripts": {
-    "review": "elm-review ./src ./tests",
+    "review": "elm-review ./src ./tests --config ./review",
     "test": "elm-test",
     "lint": "elm-format ./src ./review ./tests --validate",
     "build": "exit 0"
