@@ -2,19 +2,21 @@
   "name": "prima-elm-extra",
   "repository": "git@github.com:primait/prima-elm-extra.git",
   "scripts": {
-    "analyse": "./node_modules/.bin/elm-analyse  src/*",
     "review": "./node_modules/.bin/elm-review --compiler node_modules/.bin/elm",
     "test": "./node_modules/.bin/elm-test",
     "lint": "./node_modules/.bin/elm-format ./src ./review ./tests --validate",
     "build": "exit 0"
   },
   "devDependencies": {
-    "elm": "^0.19.1-5",
-    "elm-analyse": "^0.16.5",
-    "elm-format": "^0.8.5",
-    "elm-json": "^0.2.13",
-    "elm-review": "^2.8.2",
-    "elm-test": "^0.19.1-revision10"
+    "@lydell/elm": "^0.19.1-14",
+    "@lydell/elm-json": "^0.2.13-1",
+    "elm-format": "^0.8.8",
+    "elm-review": "^2.13.5",
+    "elm-test": "^0.19.1-revision17"
   },
-  "dependencies": {}
+  "engines": {
+    "node": ">=22.16.0 <23",
+    "npm": ">=11.4.1 <12"
+  },
+  "packageManager": "yarn@4.3.1"
 }

@@ -3,7 +3,10 @@ module PrimaUpdate exposing
     , withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd
     )
 
-{-| Update function helpers
+{-| Helpers for working with `( model, Cmd msg )` update pairs.
+
+This module offers a small set of combinators to build, transform, and compose
+Elm update results in a more pipeline-friendly style.
 
 @docs PrimaUpdate
 

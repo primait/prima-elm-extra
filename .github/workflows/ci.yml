@@ -31,9 +31,6 @@ jobs:
 
       - name: Review
         run: yarn review
-      
-      - name: Analyse
-        run: yarn analyse
 
       - name: Lint
         run: yarn lint

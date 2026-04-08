@@ -1,10 +1,12 @@
 module PrimaElmExtra.Html.Render exposing
     ( htmlIf, listIf, listUnless, htmlUnless
-    , listOrNothing, maybe, maybeMap2, orNothing
-    , maybeMap
+    , listOrNothing, maybe, maybeMap, maybeMap2, orNothing
     )
 
-{-| Collection of rendering utilities
+{-| Rendering helpers for optional and conditional HTML.
+
+These helpers make it easier to show or hide nodes based on `Bool` and `Maybe`
+values without repeatedly writing `text ""` or empty lists.
 
 
 # Bool based conditionals
@@ -14,7 +16,7 @@ module PrimaElmExtra.Html.Render exposing
 
 # Maybe based conditionals
 
-@docs listOrNothing, maybe, maybeMap2, orNothing
+@docs listOrNothing, maybe, maybeMap, maybeMap2, orNothing
 
 -}
 
