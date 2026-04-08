@@ -1,70 +1,30 @@
 module PrimaElmExtra.NotEmptyList exposing
-    ( NotEmptyList
-    , NotEmptyPartition(..)
-    , all
-    , any
-    , append
-    , appendList
-    , concat
-    , concatMap
-    , cons
-    , decoder
-    , drop
-    , dropToList
-    , filter
-    , filterMap
-    , foldl
-    , foldr
-    , fromList
-    , fromListSelectionSet
-    , head
-    , intersperse
-    , length
-    , listMap
-    , map
-    , map2
-    , map3
-    , map4
-    , map5
-    , maximum
-    , member
-    , minimum
-    , notEmptyList
-    , partition
-    , product
-    , reverse
-    , singleton
-    , sort
-    , sortBy
-    , sortWith
-    , sum
-    , tail
-    , take
-    , takeToList
-    , toList
-    , unzip
+    ( NotEmptyList, NotEmptyPartition(..)
+    , singleton, notEmptyList, cons, fromList, decoder, fromListSelectionSet
+    , map, listMap, foldl, foldr, filter, filterMap
+    , length, reverse, member, all, any, maximum, minimum, sum, product
+    , append, appendList, concat, concatMap, intersperse, map2, map3, map4, map5
+    , sort, sortBy, sortWith
+    , head, tail, take, takeToList, drop, dropToList, partition, unzip, toList
     )
 
-import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
-import Json.Decode as JsonDecode
-
-
-{-| This module defines a List that can never be empty. It should cover all the native List module API and some extra helpers.
+{-| This module mirrors a large portion of the core `List` API while preserving the
+invariant that the collection can never be empty.
 
 
 # Type
 
-@docs NotEmptyList
+@docs NotEmptyList, NotEmptyPartition
 
 
 # Create
 
-@docs singleton, repeat, range, notEmptyList, cons, fromList, decode
+@docs singleton, notEmptyList, cons, fromList, decoder, fromListSelectionSet
 
 
 # Transform
 
-@docs map, listMap, indexedMap, foldl, foldr, filter, filterMap
+@docs map, listMap, foldl, foldr, filter, filterMap
 
 
 # Utilities
@@ -74,7 +34,7 @@ import Json.Decode as JsonDecode
 
 # Combine
 
-@docs append, concat, concatMap, intersperse, map2, map3, map4, map5
+@docs append, appendList, concat, concatMap, intersperse, map2, map3, map4, map5
 
 
 # Sort
@@ -84,8 +44,15 @@ import Json.Decode as JsonDecode
 
 # Deconstruct
 
-@docs isEmpty, head, tail, take, takeToList, drop, dropToList, partition, unzip, toList
+@docs head, tail, take, takeToList, drop, dropToList, partition, unzip, toList
 
+-}
+
+import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
+import Json.Decode as JsonDecode
+
+
+{-| A list type that is guaranteed to contain at least one element.
 -}
 type NotEmptyList a
     = NotEmptyList
@@ -150,6 +117,12 @@ decoder =
             )
 
 
+{-| Converts a GraphQL `SelectionSet` that returns a `List` into one that
+returns a `NotEmptyList`.
+
+The selection fails if the resolved list is empty.
+
+-}
 fromListSelectionSet : SelectionSet (List decodesTo) scope -> SelectionSet (NotEmptyList decodesTo) scope
 fromListSelectionSet =
     SelectionSet.mapOrFail (fromList >> Result.fromMaybe "List can't be empty")
@@ -318,7 +291,11 @@ map2 mapper nELA nELB =
         }
 
 
-{-| -}
+{-| Combine three `NotEmptyList`s element by element with the given function.
+
+If one list is longer, the extra elements are dropped.
+
+-}
 map3 : (a -> b -> c -> result) -> NotEmptyList a -> NotEmptyList b -> NotEmptyList c -> NotEmptyList result
 map3 mapper nELA nELB nELC =
     NotEmptyList
@@ -327,7 +304,11 @@ map3 mapper nELA nELB nELC =
         }
 
 
-{-| -}
+{-| Combine four `NotEmptyList`s element by element with the given function.
+
+If one list is longer, the extra elements are dropped.
+
+-}
 map4 : (a -> b -> c -> d -> result) -> NotEmptyList a -> NotEmptyList b -> NotEmptyList c -> NotEmptyList d -> NotEmptyList result
 map4 mapper nELA nELB nELC nELD =
     NotEmptyList
@@ -336,7 +317,11 @@ map4 mapper nELA nELB nELC nELD =
         }
 
 
-{-| -}
+{-| Combine five `NotEmptyList`s element by element with the given function.
+
+If one list is longer, the extra elements are dropped.
+
+-}
 map5 :
     (a -> b -> c -> d -> e -> result)
     -> NotEmptyList a
@@ -364,7 +349,7 @@ append nEL1 nEL2 =
         }
 
 
-{-| Appends a List to a NotEmptyList.
+{-| Appends a regular `List` to a `NotEmptyList`.
 -}
 appendList : List a -> NotEmptyList a -> NotEmptyList a
 appendList list nEL =
@@ -504,12 +489,10 @@ toList (NotEmptyList conf) =
     conf.head :: conf.tail
 
 
-{-| Partition a not empty list based on some test. The first list contains all values
-that satisfy the test, and the second list contains all the value that do not.
+{-| The result of partitioning a `NotEmptyList`.
 
-    partition (\x -> x < 3) [ 0, 1, 2, 3, 4, 5 ] == ( [ 0, 1, 2 ], [ 3, 4, 5 ] )
-
-    partition isEven [ 0, 1, 2, 3, 4, 5 ] == ( [ 0, 2, 4 ], [ 1, 3, 5 ] )
+Because the input list cannot be empty, a partition always contains at least
+one non-empty side. If both sides contain elements, `BothPartition` is used.
 
 -}
 type NotEmptyPartition a
@@ -518,6 +501,14 @@ type NotEmptyPartition a
     | BothPartition ( NotEmptyList a, NotEmptyList a )
 
 
+{-| Partition a not empty list based on some test. The first list contains all values
+that satisfy the test, and the second list contains all the value that do not.
+
+    partition (\x -> x < 3) [ 0, 1, 2, 3, 4, 5 ] == ( [ 0, 1, 2 ], [ 3, 4, 5 ] )
+
+    partition isEven [ 0, 1, 2, 3, 4, 5 ] == ( [ 0, 2, 4 ], [ 1, 3, 5 ] )
+
+-}
 partition : (a -> Bool) -> NotEmptyList a -> NotEmptyPartition a
 partition pred nEL =
     let
@@ -535,22 +526,37 @@ partitionStep : (a -> Bool) -> a -> NotEmptyPartition a -> NotEmptyPartition a
 partitionStep pred x notEmptyPartition =
     case notEmptyPartition of
         AllTruesPartition trues ->
-            if pred x then
-                AllTruesPartition (cons x trues)
-
-            else
-                BothPartition ( trues, singleton x )
+            partitionAllTrues pred x trues
 
         AllFalsesPartition falses ->
-            if pred x then
-                BothPartition ( singleton x, falses )
-
-            else
-                AllFalsesPartition (cons x falses)
+            partitionAllFalses pred x falses
 
         BothPartition ( trues, falses ) ->
-            if pred x then
-                BothPartition ( cons x trues, falses )
+            partitionBoth pred x trues falses
 
-            else
-                BothPartition ( trues, cons x falses )
+
+partitionAllTrues : (b -> Bool) -> b -> NotEmptyList b -> NotEmptyPartition b
+partitionAllTrues pred x trues =
+    if pred x then
+        AllTruesPartition (cons x trues)
+
+    else
+        BothPartition ( trues, singleton x )
+
+
+partitionAllFalses : (b -> Bool) -> b -> NotEmptyList b -> NotEmptyPartition b
+partitionAllFalses pred x falses =
+    if pred x then
+        BothPartition ( singleton x, falses )
+
+    else
+        AllFalsesPartition (cons x falses)
+
+
+partitionBoth : (b -> Bool) -> b -> NotEmptyList b -> NotEmptyList b -> NotEmptyPartition b
+partitionBoth pred x trues falses =
+    if pred x then
+        BothPartition ( cons x trues, falses )
+
+    else
+        BothPartition ( trues, cons x falses )

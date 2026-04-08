@@ -12,7 +12,8 @@ suite =
     describe "PrimaFunction tests"
         [ describe "(un)curry"
             [ List.member
-                |> (PrimaFunction.uncurry >> PrimaFunction.curry)
+                |> PrimaFunction.uncurry
+                |> PrimaFunction.curry
                 |> ExpectExtra.shouldBehaveLike2 List.member
                 |> fuzz2 Fuzz.int (Fuzz.list Fuzz.int) "(uncurry >> curry) List.member == List.member"
             ]

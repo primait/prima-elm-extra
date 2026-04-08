@@ -4,7 +4,13 @@ module PrimaCmd exposing
     , fromMsgWithDelay, fromMsg
     )
 
-{-|
+{-| Helpers for building and composing `Cmd` values.
+
+This module contains small utilities for conditional commands, batching command
+producers, and lifting plain values into Elm commands.
+
+
+# Mapping and batching
 
 @docs batchMap, cmdMap, fromMaybeMap
 
@@ -36,7 +42,7 @@ unless you encountered such edge cases, be sure to double check if there are dif
 -}
 fromMsg : msg -> Cmd msg
 fromMsg =
-    Task.perform identity << Task.succeed
+    Task.succeed >> Task.perform identity
 
 
 {-| Create a Cmd that triggers the given msg after n milliseconds
@@ -44,8 +50,7 @@ fromMsg =
 fromMsgWithDelay : Int -> msg -> Cmd msg
 fromMsgWithDelay millis msg =
     Process.sleep (toFloat millis)
-        |> Task.andThen (Task.succeed msg |> always)
-        |> Task.perform identity
+        |> Task.perform (msg |> always)
 
 
 {-|
@@ -170,12 +175,13 @@ ifThenElseCmdMap =
 -}
 ifThenElseCmdsMap : (a -> Bool) -> List (a -> Cmd msg) -> List (a -> Cmd msg) -> a -> Cmd msg
 ifThenElseCmdsMap condition cmds1 cmds2 a =
-    Cmd.batch <|
-        if condition a then
+    Cmd.batch
+        (if condition a then
             cmdMap cmds1 a
 
-        else
+         else
             cmdMap cmds2 a
+        )
 
 
 {-| Like [`ifThenElse`](PrimaFunction#ifThenElse), but batches Cmds

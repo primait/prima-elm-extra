@@ -3,7 +3,13 @@ module PrimaFunction exposing
     , ifThenElse, ifThenMap, ifThenElseMap
     )
 
-{-|
+{-| Small functional helpers for everyday Elm code.
+
+This module provides a few utilities for working with curried functions and for
+expressing conditional transformations in a pipeline-friendly style.
+
+
+# Function helpers
 
 @docs curry, uncurry, flip
 
