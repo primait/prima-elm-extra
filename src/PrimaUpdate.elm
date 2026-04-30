@@ -1,6 +1,6 @@
 module PrimaUpdate exposing
     ( PrimaUpdate
-    , withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd
+    , withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd, addCmd, addCmds, addCmdIf
     )
 
 {-| Helpers for working with `( model, Cmd msg )` update pairs.
@@ -13,7 +13,7 @@ Elm update results in a more pipeline-friendly style.
 
 # Update helpers
 
-@docs withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd
+@docs withCmd, andThen, withCmds, withCmdsMap, withoutCmds, mapModel, mapCmd, addCmd, addCmds, addCmdIf
 
 -}
 
@@ -75,6 +75,50 @@ withCmdsMap cmdFunctions model =
         |> List.map (\f -> f model)
         |> Cmd.batch
     )
+
+
+{-| Adds a command to the existing commands in a PrimaUpdate pair
+
+    model
+    |> withCmd cmd1
+    |> addCmd cmd2
+    -- => (model, Cmd.batch [cmd1, cmd2])
+
+-}
+addCmd : Cmd msg -> PrimaUpdate model msg -> PrimaUpdate model msg
+addCmd cmd ( model, cmds ) =
+    ( model, Cmd.batch [ cmd, cmds ] )
+
+
+{-| Adds a list of commands to the existing commands in a PrimaUpdate pair
+
+    model
+    |> withCmd cmd1
+    |> addCmds [cmd2, cmd3]
+    -- => (model, Cmd.batch [cmd1, cmd2, cmd3])
+
+-}
+addCmds : List (Cmd msg) -> PrimaUpdate model msg -> PrimaUpdate model msg
+addCmds newCmds ( model, cmds ) =
+    ( model, Cmd.batch (cmds :: newCmds) )
+
+
+{-| Adds a command to the existing commands in a PrimaUpdate pair if the condition is true
+
+    model
+    |> withCmd cmd1
+    |> addCmdIf (model.count > 10) cmd2
+    -- => (model, Cmd.batch [cmd1, cmd2]) if model.count > 10
+    -- => (model, cmd1) otherwise
+
+-}
+addCmdIf : Bool -> Cmd msg -> PrimaUpdate model msg -> PrimaUpdate model msg
+addCmdIf condition cmd ( model, cmds ) =
+    if condition then
+        ( model, Cmd.batch [ cmd, cmds ] )
+
+    else
+        ( model, cmds )
 
 
 
