@@ -87,7 +87,7 @@ withCmdsMap cmdFunctions model =
 -}
 addCmd : Cmd msg -> PrimaUpdate model msg -> PrimaUpdate model msg
 addCmd cmd ( model, cmds ) =
-    ( model, Cmd.batch [ cmd, cmds ] )
+    ( model, Cmd.batch [ cmds, cmd ] )
 
 
 {-| Adds a list of commands to the existing commands in a PrimaUpdate pair
@@ -115,7 +115,7 @@ addCmds newCmds ( model, cmds ) =
 addCmdIf : Bool -> Cmd msg -> PrimaUpdate model msg -> PrimaUpdate model msg
 addCmdIf condition cmd ( model, cmds ) =
     if condition then
-        ( model, Cmd.batch [ cmd, cmds ] )
+        ( model, Cmd.batch [ cmds, cmd ] )
 
     else
         ( model, cmds )
