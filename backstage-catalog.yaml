@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "prima-elm-extra"
+  description: "prima-elm-extra is a collection of reusable utilities and helpers"
+spec:
+  type: "service"
+  lifecycle: production
+  owner: "group:default/team-jessica"
+  system: prima.it
