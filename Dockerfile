@@ -1,13 +1,14 @@
-FROM node:lts
+FROM 279066465364.dkr.ecr.eu-west-1.amazonaws.com/prima-node:26.10.0
+
+USER root
+
+# Node 26 does not bundle corepack, which provides the Yarn version pinned in package.json
+RUN npm install -g corepack && \
+    corepack enable && \
+    mkdir -p /code && \
+    chown -R node:node /code
 
 WORKDIR /code
-
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
-    apt-get update && \
-    apt-get install -qqy yarn && \
-    apt-get clean && \
-    chown -R node:node /code
 
 # Serve per avere l'owner dei file scritti dal container uguale all'utente Linux sull'host
 USER node

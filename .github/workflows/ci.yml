@@ -23,10 +23,11 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.10.0'
+          node-version: '26.10.0'
 
       - name: Install deps
         run: |
+          npm install -g corepack
           corepack enable
           corepack prepare
           yarn install
