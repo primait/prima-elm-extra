@@ -1,4 +1,4 @@
-FROM 279066465364.dkr.ecr.eu-west-1.amazonaws.com/prima-node:26.11.1
+FROM 279066465364.dkr.ecr.eu-west-1.amazonaws.com/prima-node:26.12.1
 
 USER root
 
